@@ -7,11 +7,11 @@
         <div class="col-md-12 mt-4">
             <div class="row align-items-center mb-4">
                 <div class="col-6">
-                     <h3 class="fw-bold text-dark">Purchase Details</h3>
+                     <h3 class="fw-bold text-dark">{{ __('Purchase Details') }}</h3>
                 </div>
                 <div class="col-6 text-end">
                     <button type="button" class="btn btn-success" onclick="exportTableToExcel('salesTable')">
-                        <i class="fas fa-file-excel"></i> Export To Excel
+                        <i class="fas fa-file-excel"></i> {{ __('Export To Excel') }}
                     </button>
                 </div>
             </div>
@@ -20,15 +20,15 @@
         <div class="card p-3 shadow-sm mb-4">
         <form action="{{ route('purchaseDetails') }}" method="GET" class="row g-3">
                 <div class="col-md-5">
-                <label class="form-label fw-bold">Start Date</label>
+                <label class="form-label fw-bold">{{ __('Start Date') }}</label>
                 <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
             </div>
             <div class="col-md-5">
-                <label class="form-label fw-bold">End Date</label>
+                <label class="form-label fw-bold">{{ __('End Date') }}</label>
                 <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
             </div>
             <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-dark w-100">🔍 Filter</button>
+                <button type="submit" class="btn btn-dark w-100">🔍 {{ __('Filter') }}</button>
             </div>
         </form>
 
@@ -38,13 +38,13 @@
         <table class="table table-bordered text-center" id="salesTable">
             <thead class="table-dark">
                 <tr class="text-center">
-                    <th>Supplier</th>
-                    <th>Name</th>
-                    <th>Cost_Price</th>
-                    <th>Quantity</th>
-                    <th>Unit</th>
-                    <th>total_price</th>
-                    <th>Date</th>
+                    <th>{{ __('Supplier') }}</th>
+                    <th>{{ __('Name') }}</th>
+                    <th>{{ __('Cost Price') }}</th>
+                    <th>{{ __('Quantity') }}</th>
+                    <th>{{ __('Unit') }}</th>
+                    <th>{{ __('Total Price') }}</th>
+                    <th>{{ __('Date') }}</th>
                </tr>
             </thead>
             <tbody>
@@ -65,7 +65,7 @@
         </table>
         @else
         <div class="alert alert-secondary text-center" role="alert">
-                🚨 No data found for this date range.
+                🚨 {{ __('No data found for this date range.') }}
             </div>
     @endif
         </div>

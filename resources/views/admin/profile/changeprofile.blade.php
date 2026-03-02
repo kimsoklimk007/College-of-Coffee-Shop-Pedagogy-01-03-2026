@@ -5,13 +5,13 @@
     <div class="container-fluid py-4 px-4 px-md-5">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-            <h3 class="text-dark fw-bold mb-4 text-center">Change User Profile</h3>
+            <h3 class="text-dark fw-bold mb-4 text-center">{{ __('Change User Profile') }}</h3>
                 <div class="d-flex justify-content-between">
                     <div class="row">
                         <div class="col-md-10">
                             <form action="{{ route('changeProfilePage') }}" method="get">
                                 <div class="input-group mb-3">
-                                    <input type="text" name="searchKey" class="form-control " placeholder="Search..."
+                                    <input type="text" name="searchKey" class="form-control " placeholder="{{ __('Search...') }}"
                                         value="">
                                     <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
                                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -27,11 +27,11 @@
                     <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr class="text-center text-white">
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Actions</th>
-                                <th>Role</th>
+                                <th>{{ __('Name') }}</th>
+                                <th>{{ __('Email') }}</th>
+                                <th>{{ __('Phone') }}</th>
+                                <th>{{ __('Actions') }}</th>
+                                <th>{{ __('Role') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,11 +47,11 @@
                                         <select name="value" onchange="this.form.submit()" class="form-select">
                                             <option value="active"
                                                 {{ strtolower($item->status) === 'active' ? 'selected' : '' }}>
-                                                Active
+                                                {{ __('Active') }}
                                             </option>
                                             <option value="inactive"
                                                 {{ strtolower($item->status) === 'inactive' ? 'selected' : '' }}>
-                                                Inactive
+                                                {{ __('Inactive') }}
                                             </option>
                                         </select>
                                     </form>

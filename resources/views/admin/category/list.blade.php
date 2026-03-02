@@ -6,8 +6,8 @@
             <div class="col-lg-12">
                 <div class="card shadow-lg mb-4" >
                     <div class="card-header py-3 justify-content-between">
-                        <h3 class="fw-bold text-center mb-3">Manage Categories</h3>
-                        <a href="{{ route('category.create') }}" class="btn btn-primary">Add New Category</a>
+                        <h3 class="fw-bold text-center mb-3">{{ __('Manage Categories') }}</h3>
+                        <a href="{{ route('category.create') }}" class="btn btn-primary">{{ __('Add New Category') }}</a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -28,10 +28,10 @@
                             <table class="table table-bordered">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th class="text-center">No.</th>
-                                        <th class="text-center">Name</th>
-                                        <th class="text-center">Created Date</th>
-                                        <th class="text-center">Actions</th>
+                                        <th class="text-center">{{ __('No.') }}</th>
+                                        <th class="text-center">{{ __('Name') }}</th>
+                                        <th class="text-center">{{ __('Created Date') }}</th>
+                                        <th class="text-center">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -48,18 +48,18 @@
                                                             method="get">
                                                             @csrf
                                                             <button type="submit"
-                                                                class="btn btn-outline-secondary rounded-pill btn-sm me-1">Edit..</button>
+                                                                class="btn btn-outline-secondary rounded-pill btn-sm me-1">{{ __('Edit') }}..</button>
                                                         </form>
 
                                                     </div>
                                                     <div class="col-auto">
                                                         <form action="{{ route('category.delete', $category->id) }}"
                                                             method="post"
-                                                            onsubmit="return confirm('Are you sure you want to delete this category?');">
+                                                            onsubmit="return confirm('{{ addslashes(__('Are you sure you want to delete this category?')) }}');">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit"
-                                                                class="btn btn-outline-danger rounded-pill btn-sm">Delete</button>
+                                                                class="btn btn-outline-danger rounded-pill btn-sm">{{ __('Delete') }}</button>
                                                         </form>
                                                     </div>
                                                 </div>

@@ -122,7 +122,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
         Route::delete('delete/{id}', 'deleteSupplier')->name('deleteSupplier');
 
         Route::get('purchasePage', 'purchasePage')->name('purchasePage');
-        Route::post('addItem', 'addItem')->name('supplier.addItem');
+        Route::post('addItem', 'addItem')->name('addItem');
         Route::post('storePurchase', 'storePurchase')->name('storePurchase');
         Route::post('removeItem/{id}', 'removeItem')->name('removeItem');
 

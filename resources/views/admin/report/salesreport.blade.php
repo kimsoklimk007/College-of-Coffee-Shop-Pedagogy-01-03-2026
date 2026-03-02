@@ -6,11 +6,11 @@
         <div class="col-md-12 mt-4">
             <div class="row align-items-center mb-4">
                 <div class="col-6">
-                    <h3 class="fw-bold text-dark">📊 Daily Sales Report</h3>
+                    <h3 class="fw-bold text-dark">📊 {{ __('Daily Sales Report') }}</h3>
                 </div>
                 <div class="col-6 text-end">
                     <button type="button" class="btn btn-success" onclick="exportTableToExcel('salesTable')">
-                        <i class="fas fa-file-excel"></i> Export To Excel
+                        <i class="fas fa-file-excel"></i> {{ __('Export To Excel') }}
                     </button>
                 </div>
             </div>
@@ -19,15 +19,15 @@
             <div class="card p-3 shadow-sm mb-4">
                 <form action="{{ route('salesReport') }}" method="GET" class="row g-3">
                     <div class="col-md-5">
-                        <label class="form-label fw-bold">Start Date</label>
+                        <label class="form-label fw-bold">{{ __('Start Date') }}</label>
                         <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
                     </div>
                     <div class="col-md-5">
-                        <label class="form-label fw-bold">End Date</label>
+                        <label class="form-label fw-bold">{{ __('End Date') }}</label>
                         <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-dark w-100">🔍 Filter</button>
+                        <button type="submit" class="btn btn-dark w-100">🔍 {{ __('Filter') }}</button>
                     </div>
                 </form>
             </div>
@@ -38,10 +38,10 @@
                 <table class="table table-hover table-striped text-center" id="salesTable">
                     <thead class="table-dark">
                         <tr>
-                            <th>Date</th>
-                            <th>Total Sales (MMK)</th>
-                            <th>Orders 📦</th>
-                            <th>Avg. Order Value</th>
+                            <th>{{ __('Date') }}</th>
+                            <th>{{ __('Total Sales') }}</th>
+                            <th>{{ __('Orders') }} 📦</th>
+                            <th>{{ __('Avg. Order Value') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,7 +59,7 @@
 
             @else
                 <div class="alert alert-secondary text-center" role="alert">
-                    🚨 No data found for this date range.
+                    🚨 {{ __('No data found for this date range.') }}
                 </div>
             @endif
         </div>

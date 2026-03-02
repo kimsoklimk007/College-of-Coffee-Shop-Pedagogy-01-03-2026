@@ -21,12 +21,12 @@
     <div id="sidebarContainer" class="sidebar d-flex flex-column p-3 position-fixed shadow">
         @if (auth()->check())
             <a href="{{ route('adminDashboard') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
-                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                <i class="fas fa-tachometer-alt me-2"></i> {{ __('Dashboard') }}
             </a>
 
             @if (auth()->user()->role === 'cashier')
                 <a href="{{ route('bookingPage') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
-                    <i class="fas fa-calendar-alt me-2"></i> Booking
+                    <i class="fas fa-calendar-alt me-2"></i> {{ __('Booking') }}
                 </a>
             @endif
 
@@ -34,22 +34,22 @@
                 <button class="btn d-flex justify-content-between align-items-center mb-2"
                     onclick="toggleDropdown('catmenu')"
                     style="background-color: #66401d; color: white;">
-                    <span><i class="fa-solid fa-gears me-2"></i> Settings</span>
+                    <span><i class="fa-solid fa-gears me-2"></i> {{ __('Settings') }}</span>
                     <i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="catmenu list-unstyled">
                     <li><a href="{{ route('category.list') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fas fa-tags me-2"></i> Categories</a></li>
+                        <i class="fas fa-tags me-2"></i> {{ __('Categories') }}</a></li>
                     <li><a href="{{ route('product.prodlist') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fas fa-boxes me-2"></i> Products</a></li>
+                        <i class="fas fa-boxes me-2"></i> {{ __('Products') }}</a></li>
                     <li><a href="{{ route('discountPage') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fas fa-percentage me-2"></i> Discounts</a></li>
+                        <i class="fas fa-percentage me-2"></i> {{ __('Discounts') }}</a></li>
                         </a>
                     <li><a href="{{ route('deliveryInfoPage') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                    <i class="fa-solid fa-truck"></i> Delivery Fees</a></li>
+                    <i class="fa-solid fa-truck"></i> {{ __('Delivery Fees') }}</a></li>
                         </a>
                     <li><a href="{{ route('taxPage') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                    <i class="fa-solid fa-comment-dollar"></i> Tax Settings</a></li>
+                    <i class="fa-solid fa-comment-dollar"></i> {{ __('Tax Settings') }}</a></li>
                         </a>
                 </ul>
             @endif
@@ -58,74 +58,74 @@
             <button class="btn d-flex justify-content-between align-items-center mb-2"
                     onclick="toggleDropdown('purchasemenu')"
                     style="background-color: #66401d; color: white;">
-                    <span><i class="fa-solid fa-bag-shopping me-2"></i>Purchase Management</span>
+                    <span><i class="fa-solid fa-bag-shopping me-2"></i>{{ __('Purchase Management') }}</span>
                     <i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="purchasemenu list-unstyled">
                     <li><a href="{{ route('supplier.index') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fa-solid fa-circle-info me-2"></i>Supplier Info</a></li>
+                        <i class="fa-solid fa-circle-info me-2"></i>{{ __('Supplier Info') }}</a></li>
                     <li><a href="{{ route('purchasePage') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fa-solid fa-basket-shopping me-2"></i>Purchase Info</a></li>
+                        <i class="fa-solid fa-basket-shopping me-2"></i>{{ __('Purchase Info') }}</a></li>
 
                 </ul>
 
                 <button class="btn d-flex justify-content-between align-items-center mb-2"
                     onclick="toggleDropdown('assetmenu')"
                     style="background-color: #66401d; color: white;">
-                    <span><i class="fa-sharp-duotone fa-solid fa-house me-2"></i>Asset Management</span>
+                    <span><i class="fa-sharp-duotone fa-solid fa-house me-2"></i>{{ __('Asset Management') }}</span>
                     <i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="assetmenu list-unstyled">
                     <li><a href="{{ route('assetCategories.index')}}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fa-solid fa-layer-group me-2"></i>Asset Category</a></li>
+                        <i class="fa-solid fa-layer-group me-2"></i>{{ __('Asset Category') }}</a></li>
                     <li><a href="{{ route('assets.index')}}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fa-solid fa-list me-2"></i>Asset List</a></li>
+                        <i class="fa-solid fa-list me-2"></i>{{ __('Asset List') }}</a></li>
 
                 </ul>
 
                 <button class="btn d-flex justify-content-between align-items-center mb-2"
                 onclick="toggleDropdown('profilemenu')"
                 style="background-color: #66401d; color: white;">
-                <span><i class="fa-solid fa-user-gear me-2"></i> Manage Profile</span>
+                <span><i class="fa-solid fa-user-gear me-2"></i> {{ __('Manage Profile') }}</span>
                 <i class="bi bi-chevron-down"></i>
             </button>
             <ul class="profilemenu list-unstyled">
                 <li><a href="{{ route('profile.createNewUser') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                    <i class="fa-solid fa-user-plus me-2"></i> Create New User</a></li>
+                    <i class="fa-solid fa-user-plus me-2"></i> {{ __('Create New User') }}</a></li>
                 <li><a href="{{ route('profile.overview') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                    <i class="fa-solid fa-user me-2"></i>My Profile</a></li>
+                    <i class="fa-solid fa-user me-2"></i>{{ __('My Profile') }}</a></li>
                 <li><a href="{{ route('changeProfilePage') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                    <i class="fa-solid fa-unlock me-2"></i>Manage Profile</a></li>
+                    <i class="fa-solid fa-unlock me-2"></i>{{ __('Manage Profile') }}</a></li>
                 <li><a href="{{ route('resetPasswordPage') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
-                    <i class="fa-solid fa-lock-open me-2"></i> Reset Password</a></li>
+                    <i class="fa-solid fa-lock-open me-2"></i> {{ __('Reset Password') }}</a></li>
             </ul>
 
             @endif
             <button class="btn d-flex justify-content-between align-items-center mb-2"
                     onclick="toggleDropdown('submenu')"
                     style="background-color: #66401d; color: white;">
-                    <span><i class="fas fa-chart-line me-2"></i> Reports</span>
+                    <span><i class="fas fa-chart-line me-2"></i> {{ __('Reports') }}</span>
                     <i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="submenu list-unstyled">
                     <li><a href="{{ route('salesReportPage') }}" class="btn  mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fa-brands fa-sellsy me-2"></i>Sales Reports</a></li>
+                        <i class="fa-brands fa-sellsy me-2"></i>{{ __('Sales Reports') }}</a></li>
                     <li><a href="{{ route('inventoryPage') }}" class="btn  mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fa-solid fa-warehouse me-2"></i>Inventory Analysis</a></li>
+                        <i class="fa-solid fa-warehouse me-2"></i>{{ __('Inventory Analysis') }}</a></li>
                     <li><a href="{{ route('supplierPurchasePage') }}" class="btn  mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fa-solid fa-money-check-dollar me-2"></i>Summary Purchase</a></li>
+                        <i class="fa-solid fa-money-check-dollar me-2"></i>{{ __('Summary Purchase') }}</a></li>
                     <li><a href="{{ route('purchasedetailsPage') }}" class="btn  mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fa-solid fa-money-check-dollar me-2"></i>Details Purchase</a></li>
+                        <i class="fa-solid fa-money-check-dollar me-2"></i>{{ __('Details Purchase') }}</a></li>
                     <li><a href="{{ route('assetPage') }}" class="btn  mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fa-solid fa-money-check-dollar me-2"></i>Asset Report</a></li>
+                        <i class="fa-solid fa-money-check-dollar me-2"></i>{{ __('Asset Report') }}</a></li>
                     <li><a href="{{ route('feedbackPage') }}" class="btn  mb-2" style="background-color: #f1e797; color: black;">
-                        <i class="fa-solid fa-comments me-2"></i>Feedback</a></li>
+                        <i class="fa-solid fa-comments me-2"></i>{{ __('Feedback') }}</a></li>
                 </ul>
         @endif
         <form action="{{ route('logout') }}" method="POST">
             @csrf
 
-            <input type="submit" value="Logout" class="btn btn-outline-light text-center mt-2">
+            <input type="submit" value="{{ __('Logout') }}" class="btn btn-outline-light text-center mt-2 w-100">
         </form>
 
     </div>
@@ -135,7 +135,7 @@
     <div class="w-100 px-3 d-flex justify-content-between align-items-center">
         <!-- Left: Logo -->
         <a class="navbar-brand text-light fw-bold ms-4" href="{{ route('dashboard') }}">
-            <i class="fas fa-store"></i> Coffee POS
+            <i class="fas fa-store"></i> {{ __('Coffee POS') }}
         </a>
 
         <!-- Navbar Toggler for Mobile -->
@@ -148,7 +148,7 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav align-items-center">
                 <li class="nav-item">
-                    <a href="{{ route('order.orderlist') }}" class="nav-link text-light position-relative me-4">Orders
+                    <a href="{{ route('order.orderlist') }}" class="nav-link text-light position-relative me-4">{{ __('Orders') }}
                         @if(($orderPending ?? 0) > 0)
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 {{ $orderPending }}
@@ -157,9 +157,33 @@
                     </a>
                </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light me-2" href="{{ route('paymentRecord') }}">Invoice</a>
+                    <a class="nav-link text-light me-2" href="{{ route('paymentRecord') }}">{{ __('Invoice') }}</a>
                 </li>
 
+
+                <!-- Language Switcher -->
+                <li class="nav-item dropdown me-2">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center text-light" href="#" id="langDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        @if(App::getLocale() == 'en')
+                            <img src="https://flagcdn.com/w20/us.png" class="me-1" alt="English"> EN
+                        @else
+                            <img src="https://flagcdn.com/w20/kh.png" class="me-1" alt="Khmer"> KM
+                        @endif
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ route('lang.switch', 'en') }}">
+                                <img src="https://flagcdn.com/w20/us.png" class="me-2" alt="English"> {{ __('English') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ route('lang.switch', 'km') }}">
+                                <img src="https://flagcdn.com/w20/kh.png" class="me-2" alt="Khmer"> {{ __('Khmer') }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
                 <!-- Profile Dropdown -->
                 <li class="nav-item dropdown">
@@ -177,16 +201,16 @@
                     <!-- Dropdown Menu -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         <li class="dropdown-item"><strong>{{ auth()->user()->name }}</strong></li>
-                        <li class="dropdown-item text-muted small">Role: {{ auth()->user()->role }}</li>
+                        <li class="dropdown-item text-muted small">{{ __('Role') }}: {{ auth()->user()->role }}</li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="{{ route('profile.overview') }}">Profile</a></li>
-                        <li><a class="dropdown-item" href="{{ route('passwordpage') }}">Reset Password</a></li>
+                        <li><a class="dropdown-item" href="{{ route('profile.overview') }}">{{ __('Profile') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ route('passwordpage') }}">{{ __('Reset Password') }}</a></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="dropdown-item text-danger ">Logout</button>
+                                <button type="submit" class="dropdown-item text-danger ">{{ __('Logout') }}</button>
                             </form>
                         </li>
                     </ul>

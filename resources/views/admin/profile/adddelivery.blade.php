@@ -6,15 +6,15 @@
     <div class="row justify-content-center align-items-center">
         <div class="col-md-6 ">
             <div class="card p-3 shadow-sm">
-                <h3 class="text-dark fw-bold mb-4 text-center">Add Delivery Info</h3>
+                <h3 class="text-dark fw-bold mb-4 text-center">{{ __('Add Delivery Info') }}</h3>
 
                 <!-- Existing Locations Dropdown -->
                 <div class="mb-2">
 
-                    <label for="location_name" class="form-label fw-semibold">Check Existing Location</label>
+                    <label for="location_name" class="form-label fw-semibold">{{ __('Check Existing Location') }}</label>
                     <select name="location_id" class="form-select @error('location_id') is-invalid @enderror" id="location_id">
                     <!-- <select name="location_name" class="form-select @error('location_name') is-invalid @enderror" id="location_name"> -->
-                        <option value="">Choose existing location...</option>
+                        <option value="">{{ __('Choose existing location...') }}</option>
                         @foreach ($locations as $item)
                             <option value="{{ $item->id  }}"
                                     data-city="{{ $item->city }}"
@@ -31,15 +31,15 @@
                 <hr>
 
                 <!-- Delivery Info Form -->
-                <small class="fw-semibold mb-2">Add New or Update</small>
+                <small class="fw-semibold mb-2">{{ __('Add New or Update') }}</small>
                 <form action="{{ route('addDeliFees')}}" method="POST">
                     @csrf
 
                     <div class="form-floating mb-4">
                         <input type="text" name="city" id="city"
                             class="form-control @error('city') is-invalid @enderror"
-                            placeholder="Enter new city...">
-                        <label for="city">City</label>
+                            placeholder="{{ __('Enter new city...') }}">
+                        <label for="city">{{ __('City') }}</label>
                         @error('city')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
@@ -47,8 +47,8 @@
                     <div class="form-floating mb-4">
                         <input type="text" name="township" id="township"
                             class="form-control @error('township') is-invalid @enderror"
-                            placeholder="Enter new township...">
-                        <label for="township">Township</label>
+                            placeholder="{{ __('Enter new township...') }}">
+                        <label for="township">{{ __('Township') }}</label>
                         @error('township')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
@@ -57,8 +57,8 @@
                     <div class="form-floating mb-4">
                         <input type="number" name="deli_fees" id="deli_fees"
                             class="form-control @error('deli_fees') is-invalid @enderror"
-                            placeholder="Enter delivery fees">
-                        <label for="deli_fees">Delivery Fees</label>
+                            placeholder="{{ __('Enter delivery fees') }}">
+                        <label for="deli_fees">{{ __('Delivery Fees') }}</label>
                         @error('deli_fees')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
@@ -68,13 +68,13 @@
                         <div class="col-6">
                             <button type="submit" value="add" name="action"
                                 class="btn btn-primary w-100 shadow-sm rounded-pill">
-                                <i class="fas fa-plus-circle me-1"></i> Save
+                                <i class="fas fa-plus-circle me-1"></i> {{ __('Save') }}
                             </button>
                         </div>
                         <div class="col-6">
                             <button type="submit" name="action" value="update"
                                 class="btn btn-dark w-100 shadow-sm rounded-pill">
-                                <i class="fas fa-sync-alt me-1"></i> Update
+                                <i class="fas fa-sync-alt me-1"></i> {{ __('Update') }}
                             </button>
                         </div>
                     </div>

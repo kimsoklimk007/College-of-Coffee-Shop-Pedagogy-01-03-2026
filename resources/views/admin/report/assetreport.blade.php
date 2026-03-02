@@ -6,11 +6,11 @@
         <div class="col-md-12 mt-4">
             <div class="row align-items-center mb-4">
                 <div class="col-6">
-                    <h3 class="fw-bold text-dark">Asset Report</h3>
+                    <h3 class="fw-bold text-dark">{{ __('Asset Report') }}</h3>
                 </div>
                 <div class="col-6 text-end">
                     <button type="button" class="btn btn-success" onclick="exportTableToExcel('assetTable')">
-                        <i class="fas fa-file-excel"></i> Export To Excel
+                        <i class="fas fa-file-excel"></i> {{ __('Export To Excel') }}
                     </button>
                 </div>
             </div>
@@ -19,15 +19,15 @@
             <div class="card p-3 shadow-sm mb-4">
                 <form action="{{ route('assetReport') }}" method="GET" class="row g-3">
                     <div class="col-md-5">
-                        <label class="form-label fw-bold">Start Date</label>
+                        <label class="form-label fw-bold">{{ __('Start Date') }}</label>
                         <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
                     </div>
                     <div class="col-md-5">
-                        <label class="form-label fw-bold">End Date</label>
+                        <label class="form-label fw-bold">{{ __('End Date') }}</label>
                         <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-dark w-100">🔍 Filter</button>
+                        <button type="submit" class="btn btn-dark w-100">🔍 {{ __('Filter') }}</button>
                     </div>
                 </form>
             </div>
@@ -38,16 +38,16 @@
                 <table class="table table-hover table-striped text-center" id="assetTable">
                     <thead class="table-dark">
                         <tr>
-                            <th>Serial Number</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Assigned User</th>
-                            <th>Purchase Date</th>
-                            <th>Purchase Value</th>
-                            <th>Depreciation Rate (%)</th>
-                            <th>Warranty Expiry Date</th>
-                            <th>Status</th>
-                            <th>Notes</th>
+                            <th>{{ __('Serial Number') }}</th>
+                            <th>{{ __('Name') }}</th>
+                            <th>{{ __('Category') }}</th>
+                            <th>{{ __('Assigned User') }}</th>
+                            <th>{{ __('Purchase Date') }}</th>
+                            <th>{{ __('Purchase Value') }}</th>
+                            <th>{{ __('Depreciation Rate (%)') }}</th>
+                            <th>{{ __('Warranty Expiry Date') }}</th>
+                            <th>{{ __('Status') }}</th>
+                            <th>{{ __('Notes') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,7 +71,7 @@
 
             @else
                 <div class="alert alert-secondary text-center" role="alert">
-                    🚨 No data found for this date range.
+                    🚨 {{ __('No data found for this date range.') }}
                 </div>
             @endif
         </div>
