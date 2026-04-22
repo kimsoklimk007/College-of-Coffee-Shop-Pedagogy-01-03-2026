@@ -5,6 +5,10 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 // use Database\Seeders\OrderSeeder;
 use Database\Seeders\DeliveryLocationSeeder;
+use Database\Seeders\ProductSeeder;
+use Database\Seeders\DiscountSeeder;
+use Database\Seeders\EmployeeRoleSeeder;
+use Database\Seeders\ShiftSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -29,8 +33,15 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call([
+            // Employee Management
+            EmployeeRoleSeeder::class,
+            ShiftSeeder::class,
             // Delivery
             DeliveryLocationSeeder::class,
+            // Products
+            ProductSeeder::class,
+            // Discounts
+            DiscountSeeder::class,
 
         ]);
 

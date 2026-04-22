@@ -148,13 +148,13 @@ input:focus, select:focus {
 
 
  /* Dropdown Menus */
- .submenu, .catmenu, .profilemenu, .purchasemenu, .assetmenu {
+ .submenu, .catmenu, .profilemenu, .purchasemenu, .assetmenu, .employeemenu {
     display: none;
     padding-left: 10px;
     transition: max-height 0.3s ease-in-out;
 }
 
-.submenu.show, .catmenu.show, .profilemenu.show, .purchasemenu.show, .assetmenu.show {
+.submenu.show, .catmenu.show, .profilemenu.show, .purchasemenu.show, .assetmenu.show, .employeemenu.show {
     display: block;
 }
 

@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\CategorySize;
 use App\Models\Discount;
 use App\Models\Product;
 use App\Models\ProductSize;
@@ -42,7 +43,7 @@ class ProductController extends Controller
         foreach ($products as $product) {
             $product->sizes = DB::table('product_sizes')
                 ->where('product_id', $product->id)
-                ->get(['size', 'price']);
+                ->get(['size', 'price', 'price_khr', 'price_usd', 'currency']);
         }
         // dd($products->all());
 
@@ -70,22 +71,81 @@ class ProductController extends Controller
         }
 
         try {
+            DB::beginTransaction();
+
+            // Create product
             $product = Product::create($data);
+
+            // Process sizes and prices
+            $sizes = $request->sizes;
+            $pricesKhr = $request->prices_khr;
+            $pricesUsd = $request->prices_usd;
+            $currencies = $request->currencies ?? [];
+            $exchangeRate = 4100;
+
+            $productSizes = [];
+
+            foreach ($sizes as $index => $size) {
+                $khrValue = !empty($pricesKhr[$index]) ? $pricesKhr[$index] : null;
+                $usdValue = !empty($pricesUsd[$index]) ? $pricesUsd[$index] : null;
+                $currency = $currencies[$index] ?? 'KHR';
+
+                // Auto-convert if only one currency is provided
+                if ($khrValue && !$usdValue) {
+                    $usdValue = round($khrValue / $exchangeRate, 2);
+                } elseif ($usdValue && !$khrValue) {
+                    $khrValue = round($usdValue * $exchangeRate);
+                }
+
+                $productSizes[] = [
+                    'product_id' => $product->id,
+                    'size'       => $size,
+                    'price'      => $khrValue ?? $usdValue,
+                    'price_khr'  => $khrValue,
+                    'price_usd'  => $usdValue,
+                    'currency'   => $currency,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            // Insert all sizes at once
+            if (!empty($productSizes)) {
+                ProductSize::insert($productSizes);
+            }
+
+            DB::commit();
+
+            return redirect()->route('product.prodlist')->with('alert', [
+                'type'    => 'success',
+                'message' => 'Product and sizes added successfully.',
+            ]);
+
         } catch (\Exception $e) {
-            dd('DB Error: ' . $e->getMessage());
+            DB::rollBack();
+            return redirect()->back()->with('alert', [
+                'type'    => 'error',
+                'message' => 'Error: ' . $e->getMessage(),
+            ])->withInput();
         }
-
-        return redirect()->route('prodsize', $product->id);
-
     }
 
     private function validationCheck($request, $action)
     {
         $rules = [
             'name'          => ['required', 'unique:products,name,' . $request->productId],
-            'stock'         => ['required', 'integer', 'max:100'],
+            'name_kh'       => 'nullable|string|max:100',
+            'stock'         => ['required', 'integer', 'min:0'],
             'description'   => 'required',
             'category_name' => 'required|exists:categories,id',
+            'sizes'         => 'required|array|min:1',
+            'sizes.*'       => 'required|string|in:S,M,L,XXL,XXX,LLX,XLL,ALL',
+            'prices_khr'    => 'required|array',
+            'prices_khr.*'  => 'nullable|numeric|min:0',
+            'prices_usd'    => 'required|array',
+            'prices_usd.*'  => 'nullable|numeric|min:0',
+            'currencies'    => 'nullable|array',
+            'currencies.*'  => 'nullable|string|in:KHR,USD',
         ];
 
         $rules['image'] = $action == 'create' ? ['required', 'mimes:png,jpg,jpeg,webp,svg,gif,bmp'] : ['mimes:png,jpg,jpeg,webp,svg,gif,bmp'];
@@ -97,6 +157,7 @@ class ProductController extends Controller
     {
         return [
             'name'        => $request->name,
+            'name_kh'     => $request->name_kh,
             'category_id' => $request->category_name,
             'description' => $request->description,
             'qty'         => $request->stock,
@@ -108,6 +169,7 @@ class ProductController extends Controller
         // dd($id);
         $products = Product::select('products.id',
             'products.name',
+            'products.name_kh',
             'products.image',
             'products.qty',
             'products.description',
@@ -131,7 +193,6 @@ class ProductController extends Controller
     //update Product
     public function produpdate(Request $request)
     {
-
         // dd($request->all());
         $this->validationCheck($request, "update");
 
@@ -153,30 +214,95 @@ class ProductController extends Controller
         // Prepare data for Product table
         $productData = [
             'name'        => $data['name'],
+            'name_kh'     => $data['name_kh'],
             'category_id' => $data['category_id'],
             'description' => $data['description'],
             'qty'         => $data['qty'],
             'image'       => $image,
         ];
 
-        // Prepare data for ProductSize table
-        $productSizeData = [
-            'size'  => $request->size,
-            'price' => $request->price,
-        ];
+        try {
+            DB::beginTransaction();
 
-        // dd($request->all());
-        // Update each table
-        Product::where('id', $request->productId)->update($productData);
+            // Update Product table
+            Product::where('id', $request->productId)->update($productData);
 
-        ProductSize::where('product_id', $request->productId)
-            ->where('size', $request->oldSize)
-            ->update($productSizeData);
+            // Get existing sizes for this product
+            $existingSizes = ProductSize::where('product_id', $request->productId)
+                ->pluck('size')
+                ->toArray();
 
-        return redirect()->route('product.prodlist')->with('alert', [
-            'type'    => 'success',
-            'message' => 'Update Product Successfully',
-        ]);
+            // Process sizes and prices
+            $sizes = $request->sizes;
+            $pricesKhr = $request->prices_khr;
+            $pricesUsd = $request->prices_usd;
+            $currencies = $request->currencies ?? [];
+            $exchangeRate = 4100;
+
+            $sizesToAdd = [];
+            $sizesToUpdate = [];
+
+            foreach ($sizes as $index => $size) {
+                $khrValue = !empty($pricesKhr[$index]) ? $pricesKhr[$index] : null;
+                $usdValue = !empty($pricesUsd[$index]) ? $pricesUsd[$index] : null;
+                $currency = $currencies[$index] ?? 'KHR';
+
+                // Auto-convert if only one currency is provided
+                if ($khrValue && !$usdValue) {
+                    $usdValue = round($khrValue / $exchangeRate, 2);
+                } elseif ($usdValue && !$khrValue) {
+                    $khrValue = round($usdValue * $exchangeRate);
+                }
+
+                $sizeData = [
+                    'size'       => $size,
+                    'price'      => $khrValue ?? $usdValue,
+                    'price_khr'  => $khrValue,
+                    'price_usd'  => $usdValue,
+                    'currency'   => $currency,
+                    'updated_at' => now(),
+                ];
+
+                if (in_array($size, $existingSizes)) {
+                    // Update existing size
+                    ProductSize::where('product_id', $request->productId)
+                        ->where('size', $size)
+                        ->update($sizeData);
+                } else {
+                    // Add new size
+                    $sizeData['product_id'] = $request->productId;
+                    $sizeData['created_at'] = now();
+                    $sizesToAdd[] = $sizeData;
+                }
+            }
+
+            // Delete sizes that are no longer selected
+            $sizesToDelete = array_diff($existingSizes, $sizes);
+            if (!empty($sizesToDelete)) {
+                ProductSize::where('product_id', $request->productId)
+                    ->whereIn('size', $sizesToDelete)
+                    ->delete();
+            }
+
+            // Insert new sizes
+            if (!empty($sizesToAdd)) {
+                ProductSize::insert($sizesToAdd);
+            }
+
+            DB::commit();
+
+            return redirect()->route('product.prodlist')->with('alert', [
+                'type'    => 'success',
+                'message' => 'Update Product Successfully',
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('alert', [
+                'type'    => 'error',
+                'message' => 'Error: ' . $e->getMessage(),
+            ])->withInput();
+        }
     }
 
     //delete Products
@@ -203,17 +329,22 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         $validated = $request->validate([
-            'sizes'    => 'required|array',
-            'sizes.*'  => 'required|string|in:Small,Medium,Large',
-            'prices'   => 'required|array',
-            'prices.*' => 'required|numeric|min:0',
+            'sizes'       => 'required|array',
+            'sizes.*'     => 'required|string|in:S,M,L,XXL,XXX,LLX,XLL,ALL',
+            'prices_khr'  => 'required|array',
+            'prices_khr.*' => 'nullable|numeric|min:0',
+            'prices_usd'  => 'required|array',
+            'prices_usd.*' => 'nullable|numeric|min:0',
         ]);
 
-        $sizes  = $validated['sizes'];
-        $prices = $validated['prices'];
+        $sizes      = $validated['sizes'];
+        $pricesKhr  = $validated['prices_khr'];
+        $pricesUsd  = $validated['prices_usd'];
+        $currencies = $request->currencies ?? [];
+        $exchangeRate = 4100;
 
         $existingSizes = ProductSize::where('product_id', $product->id)
-            ->pluck('size') // get all existing sizes for this product
+            ->pluck('size')
             ->toArray();
 
         $duplicates = [];
@@ -223,20 +354,32 @@ class ProductController extends Controller
             if (in_array($size, $existingSizes)) {
                 $duplicates[] = $size;
             } else {
+                $khrValue = !empty($pricesKhr[$index]) ? $pricesKhr[$index] : null;
+                $usdValue = !empty($pricesUsd[$index]) ? $pricesUsd[$index] : null;
+
+                if ($khrValue && !$usdValue) {
+                    $usdValue = round($khrValue / $exchangeRate, 2);
+                } elseif ($usdValue && !$khrValue) {
+                    $khrValue = round($usdValue * $exchangeRate);
+                }
+
+                $currency = $currencies[$index] ?? 'KHR';
+
                 $newSizes[] = [
                     'product_id' => $product->id,
                     'size'       => $size,
-                    'price'      => $prices[$index],
+                    'price'      => $khrValue ?? $usdValue,
+                    'price_khr'  => $khrValue,
+                    'price_usd'  => $usdValue,
+                    'currency'   => $currency,
                 ];
             }
         }
 
-        // Insert new sizes
         if (! empty($newSizes)) {
             ProductSize::insert($newSizes);
         }
 
-        // Handle duplicates
         if (! empty($duplicates)) {
             return back()->with('alert', [
                 'type'    => 'error',
@@ -302,6 +445,48 @@ class ProductController extends Controller
                 'message' => 'Discount applied successfully!',
             ]);
 
+    }
+
+    // Get category sizes with default prices
+    public function getCategorySizes($categoryId)
+    {
+        try {
+            $categorySizes = CategorySize::where('category_id', $categoryId)
+                ->where('is_active', true)
+                ->orderBy('id')
+                ->get(['size', 'price_khr', 'price_usd']);
+
+            $sizeLabels = [
+                'S' => 'Small',
+                'M' => 'Medium',
+                'L' => 'Large',
+                'XXL' => 'Extra Extra Large',
+                'XXX' => 'Triple Extra Large',
+                'LLX' => 'Double Large XL',
+                'XLL' => 'Extra Large Large',
+                'ALL' => 'All Sizes'
+            ];
+
+            // Add labels to sizes
+            $sizesWithLabels = $categorySizes->map(function($size) use ($sizeLabels) {
+                return [
+                    'size' => $size->size,
+                    'price_khr' => $size->price_khr,
+                    'price_usd' => $size->price_usd,
+                    'label' => $sizeLabels[$size->size] ?? $size->size
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'sizes' => $sizesWithLabels
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error loading category sizes: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
 }

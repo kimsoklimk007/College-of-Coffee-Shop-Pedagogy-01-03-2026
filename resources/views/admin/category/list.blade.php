@@ -29,7 +29,8 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th class="text-center">{{ __('No.') }}</th>
-                                        <th class="text-center">{{ __('Name') }}</th>
+                                        <th class="text-center">{{ __('Khmer Name') }}</th>
+                                        <th class="text-center">{{ __('English Name') }}</th>
                                         <th class="text-center">{{ __('Created Date') }}</th>
                                         <th class="text-center">{{ __('Actions') }}</th>
                                     </tr>
@@ -38,6 +39,7 @@
                                     @foreach ($categories as $category)
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td><!-- Auto-incremented number  -->
+                                            <td class="text-center">{{ __($category->name) }}</td>
                                             <td class="text-center">{{ $category->name }}</td>
                                             <td class="text-center">{{ $category->created_at->format('j-F-Y') }}
                                             </td>

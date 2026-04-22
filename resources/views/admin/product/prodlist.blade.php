@@ -27,7 +27,17 @@
                                 <img src="{{ asset('productImages/' . $item->image) }}" class="card-img-top" alt="Product Image" style="height: 180px; object-fit: cover;">
                                 <span class="position-absolute bottom-0 start-0 m-2 badge bg-warning">
                                     @foreach ($item->sizes as $size)
-                                        <small class="text-muted mb-1">{{ $size->size }} - {{ $size->price }}</small><br>
+                                        <small class="text-muted mb-1">
+                                            {{ $size->size }} - 
+                                            @if($size->price_khr){{ number_format($size->price_khr) }}៛ @endif
+                                            @if($size->price_khr && $size->price_usd) / @endif
+                                            @if($size->price_usd)${{ number_format($size->price_usd, 2) }}@endif
+                                            @if($size->currency === 'USD')
+                                                <span class="badge bg-primary ms-1">$</span>
+                                            @else
+                                                <span class="badge bg-info ms-1">៛</span>
+                                            @endif
+                                        </small><br>
                                     @endforeach
                                 </span>
                             </div>

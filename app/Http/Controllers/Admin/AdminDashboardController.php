@@ -182,16 +182,20 @@ class AdminDashboardController extends Controller
         // dd($request->all());
 
         $validated = $request->validate([
-            'city'      => 'required|string|max:100',
-            'township'  => 'required|string|max:100',
-            'deli_fees' => 'required|numeric',
+            'city'         => 'required|string|max:100',
+            'city_kh'      => 'nullable|string|max:100',
+            'township'     => 'required|string|max:100',
+            'township_kh'  => 'nullable|string|max:100',
+            'deli_fees'    => 'required|numeric',
         ]);
 
         if ($request->action === 'add') {
             DeliveryFees::create([
-                'city'      => $validated['city'],
-                'township'  => $validated['township'],
-                'fees'      => $validated['deli_fees'],
+                'city'         => $validated['city'],
+                'city_kh'      => $validated['city_kh'],
+                'township'     => $validated['township'],
+                'township_kh'  => $validated['township_kh'],
+                'fees'         => $validated['deli_fees'],
             ]);
 
             return redirect()->route('deliveryInfoPage')->with('alert', [
@@ -205,7 +209,9 @@ class AdminDashboardController extends Controller
 
             if ($deliveryfees) {
                 $deliveryfees->update([
-                    'fees' => $validated['deli_fees'],
+                    'fees'         => $validated['deli_fees'],
+                    'city_kh'      => $validated['city_kh'],
+                    'township_kh'  => $validated['township_kh'],
                 ]);
                 return redirect()->route('deliveryInfoPage')->with('alert', [
                     'type'    => 'success',

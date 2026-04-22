@@ -24,6 +24,12 @@
                 <i class="fas fa-tachometer-alt me-2"></i> {{ __('Dashboard') }}
             </a>
 
+            @if (auth()->user()->role === 'admin')
+                <a href="{{ route('bookingPage') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
+                    <i class="fas fa-calendar-alt me-2"></i> {{ __('Booking') }}
+                </a>
+            @endif
+
             @if (auth()->user()->role === 'cashier')
                 <a href="{{ route('bookingPage') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
                     <i class="fas fa-calendar-alt me-2"></i> {{ __('Booking') }}
@@ -44,6 +50,8 @@
                         <i class="fas fa-boxes me-2"></i> {{ __('Products') }}</a></li>
                     <li><a href="{{ route('discountPage') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
                         <i class="fas fa-percentage me-2"></i> {{ __('Discounts') }}</a></li>
+                    <li><a href="{{ route('menu.index') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                        <i class="fas fa-utensils me-2"></i> {{ __('Menu & Pricing') }}</a></li>
                         </a>
                     <li><a href="{{ route('deliveryInfoPage') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
                     <i class="fa-solid fa-truck"></i> {{ __('Delivery Fees') }}</a></li>
@@ -51,10 +59,36 @@
                     <li><a href="{{ route('taxPage') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
                     <i class="fa-solid fa-comment-dollar"></i> {{ __('Tax Settings') }}</a></li>
                         </a>
+                    <li><a href="{{ route('employee.settings') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                    <i class="fa-solid fa-users-cog"></i> {{ __('Employee Settings') }}</a></li>
+                        </a>
                 </ul>
             @endif
 
             @if (auth()->user()->role === 'admin')
+                <button class="btn d-flex justify-content-between align-items-center mb-2"
+                    onclick="toggleDropdown('employeemenu')"
+                    style="background-color: #66401d; color: white;">
+                    <span><i class="fa-solid fa-user-tie me-2"></i> {{ __('Employee Management') }}</span>
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+                <ul class="employeemenu list-unstyled">
+                    <li><a href="{{ route('employee.settings') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                        <i class="fa-solid fa-gears me-2"></i> {{ __('Employee Settings') }}</a></li>
+                    <li><a href="{{ route('employee.index') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                        <i class="fa-solid fa-users me-2"></i> {{ __('Employee List') }}</a></li>
+                    <li><a href="{{ route('shift.index') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                        <i class="fa-solid fa-clock me-2"></i> {{ __('Shifts') }}</a></li>
+                    <li><a href="{{ route('role.index') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                        <i class="fa-solid fa-user-shield me-2"></i> {{ __('Roles') }}</a></li>
+                    <li><a href="{{ route('attendance.index') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                        <i class="fa-solid fa-qrcode me-2"></i> {{ __('Attendance') }}</a></li>
+                    <li><a href="{{ route('leave.index') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                        <i class="fa-solid fa-calendar-minus me-2"></i> {{ __('Leaves') }}</a></li>
+                    <li><a href="{{ route('payroll.index') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                        <i class="fa-solid fa-money-check-alt me-2"></i> {{ __('Payroll') }}</a></li>
+                </ul>
+
             <button class="btn d-flex justify-content-between align-items-center mb-2"
                     onclick="toggleDropdown('purchasemenu')"
                     style="background-color: #66401d; color: white;">
@@ -66,7 +100,12 @@
                         <i class="fa-solid fa-circle-info me-2"></i>{{ __('Supplier Info') }}</a></li>
                     <li><a href="{{ route('purchasePage') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
                         <i class="fa-solid fa-basket-shopping me-2"></i>{{ __('Purchase Info') }}</a></li>
-
+                    <li><a href="{{ route('inventory.index') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                        <i class="fa-solid fa-boxes-stacked me-2"></i>{{ __('Inventory') }}</a></li>
+                    <li><a href="{{ route('inventory.lowStock') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>{{ __('Low Stock Alert') }}</a></li>
+                    <li><a href="{{ route('transaction.index') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                        <i class="fa-solid fa-money-bill-transfer me-2"></i>{{ __('Income-Expense') }}</a></li>
                 </ul>
 
                 <button class="btn d-flex justify-content-between align-items-center mb-2"
@@ -90,6 +129,8 @@
                 <i class="bi bi-chevron-down"></i>
             </button>
             <ul class="profilemenu list-unstyled">
+                <li><a href="{{ route('staff.index') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                    <i class="fa-solid fa-users me-2"></i>{{ __('Staff Management') }}</a></li>
                 <li><a href="{{ route('profile.createNewUser') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
                     <i class="fa-solid fa-user-plus me-2"></i> {{ __('Create New User') }}</a></li>
                 <li><a href="{{ route('profile.overview') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">

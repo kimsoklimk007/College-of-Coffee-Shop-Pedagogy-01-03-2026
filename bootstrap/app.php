@@ -1,5 +1,8 @@
 <?php
 
+// Suppress deprecated PDO warnings for Laravel vendor files
+error_reporting(E_ALL & ~E_DEPRECATED);
+
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\ChefMiddleware;
 use App\Http\Middleware\UserMiddleware;

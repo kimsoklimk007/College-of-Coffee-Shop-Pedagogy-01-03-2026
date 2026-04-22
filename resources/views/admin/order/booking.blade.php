@@ -89,7 +89,7 @@
                                 <input type="hidden" name="categoryId" value="{{ $category->id }}">
                                 <button type="submit" class="category-btn">
                                     <div class="card category-card text-center">
-                                        <h6 class="card-title">{{ $category->name }}</h6>
+                                        <h6 class="card-title">{{ __($category->name) }}</h6>
                                     </div>
                                 </button>
                             </form>
@@ -126,7 +126,11 @@
                                         <div class="card-body d-flex flex-column">
                                             <p class="mb-2 text-muted small">{{ __('Price:') }}
                                                 <strong class="text-dark" id="price-{{ $item->id }}">
-                                                    {{ number_format($item->sizes[0]->price ?? 0) }}
+                                                    @if(($item->sizes[0]->currency ?? 'KHR') === 'KHR')
+                                                        {{ number_format($item->sizes[0]->price_khr ?? $item->sizes[0]->price ?? 0) }} ៛
+                                                    @else
+                                                        $ {{ number_format($item->sizes[0]->price_usd ?? $item->sizes[0]->price ?? 0, 2) }}
+                                                    @endif
                                                 </strong>
                                             </p>
 
@@ -153,7 +157,10 @@
                                                             style="max-width: 40px; border: 2px solid rgb(255, 166, 0); border-radius: 4px;"
                                                             {{ count($item->sizes) === 1 ? 'disabled' : '' }}>
                                                         @foreach($item->sizes as $size)
-                                                            <option value="{{ $size->size }}" data-price="{{ $size->price }}"
+                                                            <option value="{{ $size->size }}"
+                                                                    data-price-khr="{{ $size->price_khr ?? $size->price }}"
+                                                                    data-price-usd="{{ $size->price_usd ?? $size->price }}"
+                                                                    data-currency="{{ $size->currency ?? 'KHR' }}"
                                                                 {{ $size->size == $selectedSize ? 'selected' : '' }}>
                                                                 {{ strtoupper($size->size[0]) }}
                                                             </option>
@@ -217,34 +224,69 @@
                                 </thead>
                                 <tbody>
                                     @if (isset($cartItems) && $cartItems->isNotEmpty())
+                                        @php
+                                            $exchangeRate = 4100; // 1 USD = 4100 KHR
+                                        @endphp
                                         @foreach ($cartItems as $item)
-                                            <tr>
+                                            <!-- KHR Row -->
+                                            <tr class="cart-item-khr">
                                                 <td>
-                                                    <p class="mb-0">{{ $item->name }}</p>
+                                                    <p class="mb-0 fw-bold">{{ $item->name_kh ?? $item->name }}</p>
+                                                    <p class="mb-0 text-muted small">{{ $item->name }}</p>
                                                 </td>
                                                 <td class="text-center">
                                                     <p class="mb-0">{{ $item->cart_qty }}</p>
                                                 </td>
                                                 <td class="text-center">
-                                                    <p class="mb-0">{{ number_format($item->price) }}</p>
+                                                    <p class="mb-0 price-khr">
+                                                        {{ number_format($item->price_khr ?? $item->price) }} ៛
+                                                    </p>
                                                 </td>
-
                                                 <td class="text-center">
                                                     <p class="mb-0">{{ strtoupper(substr($item->size, 0, 1)) }}</p>
-
                                                 </td>
                                                 <td class="text-center">
                                                     <p class="mb-0">{{ intval($item->discount_percentage) }}%</p>
                                                 </td>
                                                 <td class="text-end">
-                                                    <p class="mb-0">
-                                                        {{ number_format($item->discountPrice * $item->cart_qty) }}</p>
+                                                    <p class="mb-0 price-khr">
+                                                        {{ number_format($item->discountPrice * $item->cart_qty) }} ៛
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            <!-- USD Row -->
+                                            @php
+                                                $priceUsd = ($item->price_khr ?? $item->price) / $exchangeRate;
+                                                $amountUsd = ($item->discountPrice * $item->cart_qty) / $exchangeRate;
+                                            @endphp
+                                            <tr class="cart-item-usd">
+                                                <td>
+                                                    <p class="mb-0 item-name text-muted">{{ $item->name }}</p>
+                                                </td>
+                                                <td class="text-center">
+                                                    <p class="mb-0 text-muted">{{ $item->cart_qty }}</p>
+                                                </td>
+                                                <td class="text-center">
+                                                    <p class="mb-0 price-usd">
+                                                        $ {{ number_format($priceUsd, 2) }}
+                                                    </p>
+                                                </td>
+                                                <td class="text-center">
+                                                    <p class="mb-0 text-muted">{{ strtoupper(substr($item->size, 0, 1)) }}</p>
+                                                </td>
+                                                <td class="text-center">
+                                                    <p class="mb-0 text-muted">{{ intval($item->discount_percentage) }}%</p>
+                                                </td>
+                                                <td class="text-end">
+                                                    <p class="mb-0 price-usd">
+                                                        $ {{ number_format($amountUsd, 2) }}
+                                                    </p>
                                                 </td>
                                             </tr>
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="4" class="text-center">{{ __('No items in the cart.') }}</td>
+                                            <td colspan="6" class="text-center">{{ __('No items in the cart.') }}</td>
                                         </tr>
                                     @endif
                                 </tbody>
@@ -269,45 +311,83 @@
                                     <select id="deliveryLocation" name="deliveryLocation" class="form-select" onchange="setDeliveryLocation(this.value)">
                                         <option value="" disabled selected>{{ __('Select a location') }}</option>
                                         @foreach ($deliveryLocations as $location)
+                                            @php
+                                                $displayTownship = app()->getLocale() == 'km' && $location->township_kh ? $location->township_kh : $location->township;
+                                            @endphp
                                             <option value="{{ $location->id }}" {{ $deliveryLocationId == $location->id ? 'selected' : '' }}>
-                                                {{ $location->township }} ({{ number_format($location->fees) }} MMK)
+                                                {{ $displayTownship }} ({{ number_format($location->fees) }} MMK)
                                             </option>
                                         @endforeach
                                     </select>
                                 </div>
                             @endif
                             <div class="mt-3">
-                                <!-- Total Summary -->
-                                <div class="d-flex justify-content-between">
-                                    <span>{{ __('Subtotal') }}</span>
-                                    <span> {{ number_format($subTotal ?? 0, 0) }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>{{ __('Tax') }}</span>
-                                    <span> {{ number_format($taxAmount ?? 0, 0) }}</span>
-                                </div>
                                 @php
-                                    $orderType = request('orderType', '');
-                                    $deliveryLocationId = request('deliveryLocation');
-                                    $selectedLocation = \App\Models\DeliveryFees::find($deliveryLocationId);
-                                    $deliveryFee = $selectedLocation ? $selectedLocation->fees : 0;
+                                    $exchangeRate = 4100; // 1 USD = 4100 KHR
+                                    $subtotalUsd = ($subTotal ?? 0) / $exchangeRate;
+                                    $taxUsd = ($taxAmount ?? 0) / $exchangeRate;
+                                    $deliveryFeeUsd = $deliveryFee / $exchangeRate;
+                                    $totalUsd = ($total ?? 0) / $exchangeRate;
                                 @endphp
 
-                                <!-- delivery charges -->
-                                @if (!empty($orderType) && $orderType === 'delivery')
-                                    <div class="d-flex justify-content-between">
-                                        <span>{{ __('Delivery Fee') }}</span>
-                                        <span>{{ number_format($deliveryFee, 0) }}</span>
-                                    </div>
-                                @endif
-                                <div class="d-flex justify-content-between">
-                                    <span>{{ __('Total') }}</span>
-                                    <span> {{ number_format($total ?? 0, 0) }}</span>
-                                    <input type="hidden" id="totalAmount" name="totalAmount"
-                                        value="{{ $total ?? 0 }}">
-                                    {{-- <input type="number" class="form-control" id="cashReceived" placeholder="Enter cash received" onchange="calculateChange()"> --}}
+                                <!-- Exchange Rate Display -->
+                                <div class="exchange-rate-display">
+                                    <i class="fa-solid fa-exchange-alt"></i> {{ __('Exchange Rate') }}: 1 USD = {{ number_format($exchangeRate) }} KHR
                                 </div>
 
+                                <!-- KHR Currency Section -->
+                                <div class="currency-section khr-section">
+                                    <div class="currency-header">
+                                        <i class="fa-solid fa-money-bill-wave"></i> {{ __('Amount in KHR') }}
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>{{ __('Subtotal') }}</span>
+                                        <span class="amount">{{ number_format($subTotal ?? 0, 0) }} ៛</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>{{ __('Tax') }}</span>
+                                        <span class="amount">{{ number_format($taxAmount ?? 0, 0) }} ៛</span>
+                                    </div>
+                                    @if (!empty($orderType) && $orderType === 'delivery')
+                                        <div class="summary-row">
+                                            <span>{{ __('Delivery Fee') }}</span>
+                                            <span class="amount">{{ number_format($deliveryFee, 0) }} ៛</span>
+                                        </div>
+                                    @endif
+                                    <div class="summary-row total-row">
+                                        <span>{{ __('Total') }}</span>
+                                        <span class="amount">{{ number_format($total ?? 0, 0) }} ៛</span>
+                                    </div>
+                                </div>
+
+                                <!-- USD Currency Section -->
+                                <div class="currency-section usd-section">
+                                    <div class="currency-header">
+                                        <i class="fa-solid fa-dollar-sign"></i> {{ __('Amount in USD') }}
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>{{ __('Subtotal') }}</span>
+                                        <span class="amount">$ {{ number_format($subtotalUsd, 2) }}</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>{{ __('Tax') }}</span>
+                                        <span class="amount">$ {{ number_format($taxUsd, 2) }}</span>
+                                    </div>
+                                    @if (!empty($orderType) && $orderType === 'delivery')
+                                        <div class="summary-row">
+                                            <span>{{ __('Delivery Fee') }}</span>
+                                            <span class="amount">$ {{ number_format($deliveryFeeUsd, 2) }}</span>
+                                        </div>
+                                    @endif
+                                    <div class="summary-row total-row">
+                                        <span>{{ __('Total') }}</span>
+                                        <span class="amount">$ {{ number_format($totalUsd, 2) }}</span>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" id="totalAmount" name="totalAmount" value="{{ $total ?? 0 }}">
+                                <input type="hidden" id="totalAmountUsd" name="totalAmountUsd" value="{{ $totalUsd }}">
+                                <input type="hidden" id="exchangeRate" value="{{ $exchangeRate }}">
                             </div>
 
 
@@ -326,10 +406,29 @@
                             <div id="paymentDetails" class="mt-4">
                                 <!-- Cash Payment Section -->
                                 <div id="cashPaymentSection" style="display: none;">
-                                    <label for="cashReceived">{{ __('Cash Received') }}</label>
-                                    <input type="number" class="form-control" id="cashReceived"
-                                        placeholder="{{ __('Enter cash received') }}" onchange="calculateChange()">
-                                    <p class="mt-2">{{ __('Change Due:') }} <span id="changeDue">0</span></p>
+                                    <div class="mb-3">
+                                        <label for="cashReceived" class="form-label fw-bold">
+                                            <i class="fa-solid fa-money-bill-wave text-success"></i> {{ __('Cash Received') }} (KHR)
+                                        </label>
+                                        <input type="number" class="form-control" id="cashReceived"
+                                            placeholder="{{ __('Enter cash received') }}" oninput="calculateChange()">
+                                    </div>
+
+                                    <!-- Change Display in Both Currencies -->
+                                    <div class="card bg-light">
+                                        <div class="card-body p-3">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <small class="text-muted">{{ __('Change Due') }} (KHR)</small>
+                                                    <p class="mb-0 fw-bold text-success fs-5" id="changeDueKhr">0 ៛</p>
+                                                </div>
+                                                <div class="col-6 text-end">
+                                                    <small class="text-muted">{{ __('Change Due') }} (USD)</small>
+                                                    <p class="mb-0 fw-bold text-primary fs-5" id="changeDueUsd">$ 0.00</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div id="cardPaymentSection" style="display: none;">
                                     <label for="cardNumber">{{ __('Card Number') }}</label>
@@ -463,11 +562,17 @@
     document.querySelectorAll('.size-dropdown').forEach(dropdown => {
         dropdown.addEventListener('change', function () {
             const selectedOption = this.options[this.selectedIndex];
-            const price = selectedOption.getAttribute('data-price');
+            const priceKhr = selectedOption.getAttribute('data-price-khr');
+            const priceUsd = selectedOption.getAttribute('data-price-usd');
+            const currency = selectedOption.getAttribute('data-currency') || 'KHR';
             const productId = this.getAttribute('data-product-id');
             const priceElement = document.getElementById('price-' + productId);
             if (priceElement) {
-                priceElement.textContent = parseInt(price).toLocaleString(); // format with commas
+                if (currency === 'KHR') {
+                    priceElement.textContent = parseInt(priceKhr).toLocaleString() + ' ៛';
+                } else {
+                    priceElement.textContent = '$ ' + parseFloat(priceUsd).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                }
             }
         });
     });
@@ -493,18 +598,30 @@
     function calculateChange() {
         const cashReceived = parseFloat(document.getElementById('cashReceived').value) || 0;
         const total = @json($total ?? 0);
+        const exchangeRate = parseFloat(document.getElementById('exchangeRate').value) || 4100;
         const confirmPaymentBtn = document.getElementById('confirm-payment-btn');
 
         if (cashReceived < total) {
-            alert("{{ __('Not enough balance') }}");
-            document.getElementById('changeDue').innerText = "0.00";
+            document.getElementById('changeDueKhr').innerText = "{{ __('Not enough balance') }}";
+            document.getElementById('changeDueKhr').classList.add('text-danger');
+            document.getElementById('changeDueKhr').classList.remove('text-success');
+            document.getElementById('changeDueUsd').innerText = "$ 0.00";
             confirmPaymentBtn.disabled = true;
             return;
         }
-        const changeDue = cashReceived - total;
-        document.getElementById('changeDue').innerText = changeDue.toFixed(2);
-        confirmPaymentBtn.disabled = false;
 
+        const changeDue = cashReceived - total;
+        const changeDueUsd = changeDue / exchangeRate;
+
+        // Display change in KHR
+        document.getElementById('changeDueKhr').innerText = changeDue.toLocaleString() + ' ៛';
+        document.getElementById('changeDueKhr').classList.remove('text-danger');
+        document.getElementById('changeDueKhr').classList.add('text-success');
+
+        // Display change in USD
+        document.getElementById('changeDueUsd').innerText = '$ ' + changeDueUsd.toFixed(2);
+
+        confirmPaymentBtn.disabled = false;
     }
 
 
