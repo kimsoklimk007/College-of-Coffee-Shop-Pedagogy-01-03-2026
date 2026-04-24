@@ -37,6 +37,22 @@
                         @else
                             <!-- Payment Slip Table -->
                             <div class="slip-container bg-white text-black rounded-3" >
+                                <!-- Business Header -->
+                                <div style="text-align: center; margin-bottom: 10px; padding: 10px;">
+                                    @if(business_logo())
+                                        <img src="{{ business_logo() }}" alt="Logo" style="max-height: 40px; margin-bottom: 5px;">
+                                    @endif
+                                    <h5 style="margin: 0; font-weight: bold;">{{ business('business_name_kh', 'កាហ្វេ គរុកោសល្យ និងមីនីម៉ាត') }}</h5>
+                                    <p style="margin: 0; font-size: 12px;">{{ business('business_name_en', 'BTEC Cafe & Mini Mart') }}</p>
+                                    @if(business_address())
+                                        <p style="margin: 0; font-size: 10px; color: #666;">{{ business_address() }}</p>
+                                    @endif
+                                    @if(business_phone())
+                                        <p style="margin: 0; font-size: 10px; color: #666;">{{ __('Tel:') }} {{ business_phone() }}</p>
+                                    @endif
+                                </div>
+                                <hr style="border: none; border-top: 1px dashed #000; margin: 5px 10px;">
+
                                 <div class="text-center mb-3">
                                     <h5 style="margin: 0; font-weight: bold;">{{ __('Payment Slip') }}</h5>
                                 </div>
@@ -113,6 +129,13 @@
                                     </table>
                                 </div>
                                 <div class="text-center" style="font-weight: bold;">{{ __('Thank You') }}</div>
+
+                                <!-- Receipt Footer -->
+                                @if(receipt_footer())
+                                    <div style="text-align: center; margin-top: 5px; font-size: 11px; color: #666;">
+                                        {{ receipt_footer() }}
+                                    </div>
+                                @endif
                             </div>
                         @endif
                     </div>

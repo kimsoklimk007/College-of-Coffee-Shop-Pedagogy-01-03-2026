@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\RouteController;
+use App\Http\Controllers\Api\WorkLocationController;
+use App\Http\Controllers\Api\AttendanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -102,3 +104,31 @@ Route::post('feedback/create', [RouteController::class, 'createFeedback']);
 Route::post('create/category', [RouteController::class, 'createCategory']);
 Route::post('create/feedback', [RouteController::class, 'createFeedback']);
 Route::post('category/update', [RouteController::class, 'categoryUpdate']);
+
+
+// ==================== WORK LOCATION ROUTES (តារាងទីតាំងធ្វើការ) ====================
+// GET    /api/locations                      - List all work locations
+// GET    /api/locations/{id}                 - Get location detail
+// GET    /api/locations/code/{code}          - Get location by code
+// POST   /api/locations/validate             - Validate GPS location (geo-fencing)
+// POST   /api/locations/nearby              - Find nearby locations
+// GET    /api/employees/{id}/locations       - Get employee's assigned locations
+// POST   /api/employees/{id}/default-location - Set default location for employee
+
+Route::get('locations', [WorkLocationController::class, 'index']);
+Route::get('locations/{id}', [WorkLocationController::class, 'show']);
+Route::get('locations/code/{code}', [WorkLocationController::class, 'showByCode']);
+Route::post('locations/validate', [WorkLocationController::class, 'validateLocation']);
+Route::post('locations/nearby', [WorkLocationController::class, 'getNearbyLocations']);
+Route::get('employees/{id}/locations', [WorkLocationController::class, 'getEmployeeLocations']);
+Route::post('employees/{id}/default-location', [WorkLocationController::class, 'setDefaultLocation']);
+
+
+// ==================== ATTENDANCE ROUTES (កត់ត្រាអវត្តមាន) ====================
+// POST   /api/attendance/check-in            - Check in with QR Code + GPS
+// POST   /api/attendance/check-out           - Check out with QR Code + GPS
+// GET    /api/attendance/history/{employeeId} - Get attendance history
+
+Route::post('attendance/check-in', [AttendanceController::class, 'checkIn']);
+Route::post('attendance/check-out', [AttendanceController::class, 'checkOut']);
+Route::get('attendance/history/{employeeId}', [AttendanceController::class, 'getHistory']);

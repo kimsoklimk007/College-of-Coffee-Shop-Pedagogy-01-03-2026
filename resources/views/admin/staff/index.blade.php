@@ -80,12 +80,20 @@
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         @if($member->id !== auth()->id())
-                                            <form action="{{ route('staff.toggleStatus', $member->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm btn-{{ $member->status === 'active' ? 'danger' : 'success' }}">
-                                                    <i class="fas fa-{{ $member->status === 'active' ? 'ban' : 'check' }}"></i>
-                                                </button>
-                                            </form>
+                                            {{-- Only Admin can toggle status --}}
+                                            @if(auth()->user()->role === 'admin')
+                                                {{-- System Owner (ID: 1) can toggle any status --}}
+                                                {{-- Other Admin can only toggle non-admin status or their own status --}}
+                                                @if(auth()->id() === 1 || $member->role !== 'admin' || $member->id === auth()->id())
+                                                    <form action="{{ route('staff.toggleStatus', $member->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm btn-{{ $member->status === 'active' ? 'danger' : 'success' }}"
+                                                                title="{{ $member->status === 'active' ? __('Deactivate') : __('Activate') }}">
+                                                            <i class="fas fa-{{ $member->status === 'active' ? 'ban' : 'check' }}"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @endif
                                             <form action="{{ route('staff.destroy', $member->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')

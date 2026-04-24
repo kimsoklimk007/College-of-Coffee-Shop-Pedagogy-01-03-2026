@@ -61,23 +61,38 @@ class StaffController extends Controller
     public function update(Request $request, $id)
     {
         $staff = User::findOrFail($id);
+        $currentUser = auth()->user();
 
-        $validated = $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($staff->id)],
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'role' => 'required|in:admin,cashier,staff',
             'password' => 'nullable|string|min:6|confirmed',
-            'status' => 'required|in:active,inactive',
-        ]);
+        ];
+
+        // Only admin can change status
+        if ($currentUser->role === 'admin') {
+            // System Owner (ID: 1) can change any status
+            // Other Admin can only change non-admin status or their own status
+            if ($currentUser->id === 1 || $staff->role !== 'admin' || $staff->id === $currentUser->id) {
+                $rules['status'] = 'required|in:active,inactive';
+            }
+        }
+
+        $validated = $request->validate($rules);
 
         $staff->name = $validated['name'];
         $staff->email = $validated['email'];
-        $staff->phone = $validated['phone'];
-        $staff->address = $validated['address'];
+        $staff->phone = $validated['phone'] ?? $staff->phone;
+        $staff->address = $validated['address'] ?? $staff->address;
         $staff->role = $validated['role'];
-        $staff->status = $validated['status'];
+
+        // Only update status if user is admin and has permission
+        if (isset($validated['status']) && $currentUser->role === 'admin') {
+            $staff->status = $validated['status'];
+        }
 
         if (!empty($validated['password'])) {
             $staff->password = Hash::make($validated['password']);
@@ -104,14 +119,23 @@ class StaffController extends Controller
     public function toggleStatus($id)
     {
         $staff = User::findOrFail($id);
-        
-        if ($staff->id === auth()->id()) {
-            return back()->with('error', 'You cannot change your own status!');
+        $currentUser = auth()->user();
+
+        // Only admin can change staff status
+        if ($currentUser->role !== 'admin') {
+            return back()->with('error', 'Only Admin can change staff status!');
+        }
+
+        // Prevent changing status of other admin users (only System Owner can do this)
+        // Admin can change their own status via edit form, but not via toggle button (handled in view)
+        if ($staff->role === 'admin' && $currentUser->id !== 1 && $staff->id !== $currentUser->id) {
+            return back()->with('error', 'Only System Owner can change Admin status!');
         }
 
         $staff->status = $staff->status === 'active' ? 'inactive' : 'active';
         $staff->save();
 
-        return back()->with('success', 'Staff status updated successfully!');
+        $statusText = $staff->status === 'active' ? 'Active' : 'Inactive';
+        return back()->with('success', "Staff status changed to {$statusText} successfully!");
     }
 }

@@ -16,6 +16,7 @@ class Employee extends Model
         'user_id',
         'role_id',
         'shift_id',
+        'default_location_id',
         'first_name',
         'last_name',
         'first_name_kh',
@@ -43,6 +44,12 @@ class Employee extends Model
         'employment_type',
         'has_qr_code',
         'qr_code_path',
+        'id_card_qr_path',
+        'id_card_qr_generated_at',
+        'attendance_qr_path',
+        'attendance_qr_generated_at',
+        'attendance_qr_expires_at',
+        'qr_code_status',
         'profile_photo',
         'id_card_photo',
         'contract_document',
@@ -59,6 +66,9 @@ class Employee extends Model
         'base_salary' => 'decimal:2',
         'has_qr_code' => 'boolean',
         'other_documents' => 'array',
+        'id_card_qr_generated_at' => 'datetime',
+        'attendance_qr_generated_at' => 'datetime',
+        'attendance_qr_expires_at' => 'datetime',
     ];
 
     // Relationships
@@ -75,6 +85,35 @@ class Employee extends Model
     public function shift()
     {
         return $this->belongsTo(Shift::class);
+    }
+
+    /**
+     * ទំនាក់ទំនង - ទីតាំងគោល (default location)
+     */
+    public function defaultLocation()
+    {
+        return $this->belongsTo(WorkLocation::class, 'default_location_id');
+    }
+
+    /**
+     * ទំនាក់ទំនង - ទីតាំងធ្វើការទាំងអស់ (work locations)
+     */
+    public function workLocations()
+    {
+        return $this->belongsToMany(WorkLocation::class, 'employee_locations', 'employee_id', 'location_id')
+            ->withPivot([
+                'assignment_type',
+                'start_date',
+                'end_date',
+                'can_check_in',
+                'can_check_out',
+                'is_location_manager',
+                'require_strict_location',
+                'custom_radius_meters',
+                'status',
+                'notes'
+            ])
+            ->withTimestamps();
     }
 
     public function attendance()

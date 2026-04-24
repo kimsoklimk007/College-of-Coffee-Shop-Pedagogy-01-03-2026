@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('POS System') }}</title>
+    <title>{{ business_name() }} - {{ __('POS System') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome CSS -->
@@ -39,6 +39,24 @@
                             </a>
                         </li>
                     </ul>
+                </div>
+
+                <!-- Business Name Header -->
+                <div class="d-flex align-items-center justify-content-between mb-3 bg-light p-2 rounded">
+                    <div class="d-flex align-items-center">
+                        @if(business_logo())
+                            <img src="{{ business_logo() }}" alt="Logo" style="max-height: 35px; margin-right: 10px;">
+                        @endif
+                        <div>
+                            <h5 class="mb-0 fw-bold">{{ business('business_name_kh', 'កាហ្វេ គរុកោសល្យ និងមីនីម៉ាត') }}</h5>
+                            <small class="text-muted">{{ business('business_name_en', 'BTEC Cafe & Mini Mart') }}</small>
+                        </div>
+                    </div>
+                    @if(business_phone())
+                        <div class="text-end d-none d-md-block">
+                            <small class="text-muted"><i class="fas fa-phone"></i> {{ business_phone() }}</small>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="d-flex flex-wrap mb-3 align-items-center">

@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\LeaveController;
 use App\Http\Controllers\Admin\PayrollController;
+use App\Http\Controllers\Admin\BusinessSettingController;
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/home', [AdminDashboardController::class, 'index'])->name('adminDashboard');
@@ -96,6 +97,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::prefix('tax')->controller(AdminDashboardController::class)->group(function () {
         Route::get('taxPage', 'taxPage')->name('taxPage');
         Route::post('addTaxRate', 'addTaxRate')->name('addTaxRate');
+    });
+
+    // Business Settings Routes
+    Route::prefix('business')->controller(BusinessSettingController::class)->group(function () {
+        Route::get('settings', 'index')->name('business.settings');
+        Route::post('update', 'update')->name('business.update');
+        Route::delete('deleteLogo', 'deleteLogo')->name('business.deleteLogo');
     });
 
     Route::prefix('delivery')->controller(AdminDashboardController::class)->group(function () {
@@ -216,7 +224,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
         Route::post('store', 'store')->name('employee.store');
         Route::get('show/{id}', 'show')->name('employee.show');
         Route::get('edit/{id}', 'edit')->name('employee.edit');
-        Route::post('update/{id}', 'update')->name('employee.update');
+        Route::put('update/{id}', 'update')->name('employee.update');
         Route::delete('delete/{id}', 'destroy')->name('employee.delete');
         Route::post('toggle-status/{id}', 'toggleStatus')->name('employee.toggleStatus');
         Route::post('generate-qr/{id}', 'generateQrCode')->name('employee.generateQr');

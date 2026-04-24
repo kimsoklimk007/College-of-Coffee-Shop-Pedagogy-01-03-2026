@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS System</title>
+    <title>{{ business_name() }} - POS System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     {{-- sweet alert  --}}
@@ -20,9 +20,45 @@
     <!-- Sidebar -->
     <div id="sidebarContainer" class="sidebar d-flex flex-column p-3 position-fixed shadow">
         @if (auth()->check())
-            <a href="{{ route('adminDashboard') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
-                <i class="fas fa-tachometer-alt me-2"></i> {{ __('Dashboard') }}
-            </a>
+            {{-- 👑 Super Admin Control Center Menu --}}
+            @if (auth()->user()->isSuperAdmin())
+                <a href="{{ route('system.dashboard') }}" class="btn mb-2" style="background-color: #1a1a2e; color: #ffd700; border: 1px solid #ffd700;">
+                    <i class="fas fa-crown me-2"></i> {{ __('System Dashboard') }}
+                </a>
+
+                {{-- User Management --}}
+                <a href="{{ route('system.users') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
+                    <i class="fas fa-users-cog me-2"></i> {{ __('Users') }}
+                </a>
+
+                {{-- Shop Management --}}
+                <a href="{{ route('system.shops') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
+                    <i class="fas fa-store me-2"></i> {{ __('Shops') }}
+                </a>
+
+                {{-- System Reports --}}
+                <a href="{{ route('system.reports') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
+                    <i class="fas fa-chart-line me-2"></i> {{ __('Reports') }}
+                </a>
+
+                {{-- System Settings --}}
+                <a href="{{ route('system.settings') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
+                    <i class="fas fa-cog me-2"></i> {{ __('Settings') }}
+                </a>
+
+                {{-- Activity Logs --}}
+                <a href="{{ route('system.activityLogs') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
+                    <i class="fas fa-history me-2"></i> {{ __('Logs') }}
+                </a>
+
+                <hr class="text-white-50 my-3">
+            @endif
+
+            @if(!auth()->user()->isSuperAdmin())
+                <a href="{{ route('adminDashboard') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
+                    <i class="fas fa-tachometer-alt me-2"></i> {{ __('Dashboard') }}
+                </a>
+            @endif
 
             @if (auth()->user()->role === 'admin')
                 <a href="{{ route('bookingPage') }}" class="btn mb-2" style="background-color: #66401d; color: white;">
@@ -58,6 +94,9 @@
                         </a>
                     <li><a href="{{ route('taxPage') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
                     <i class="fa-solid fa-comment-dollar"></i> {{ __('Tax Settings') }}</a></li>
+                        </a>
+                    <li><a href="{{ route('business.settings') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
+                    <i class="fa-solid fa-building"></i> {{ __('Business Settings') }}</a></li>
                         </a>
                     <li><a href="{{ route('employee.settings') }}" class="btn mb-2" style="background-color: #f1e797; color: black;">
                     <i class="fa-solid fa-users-cog"></i> {{ __('Employee Settings') }}</a></li>
@@ -176,7 +215,12 @@
     <div class="w-100 px-3 d-flex justify-content-between align-items-center">
         <!-- Left: Logo -->
         <a class="navbar-brand text-light fw-bold ms-4" href="{{ route('dashboard') }}">
-            <i class="fas fa-store"></i> {{ __('Coffee POS') }}
+            @if(business_logo())
+                <img src="{{ business_logo() }}" alt="Logo" style="height: 30px; margin-right: 8px;">
+            @else
+                <i class="fas fa-store"></i>
+            @endif
+            <span class="d-none d-md-inline">{{ business_name() }}</span>
         </a>
 
         <!-- Navbar Toggler for Mobile -->

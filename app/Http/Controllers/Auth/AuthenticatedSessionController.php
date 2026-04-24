@@ -42,6 +42,7 @@ class AuthenticatedSessionController extends Controller
             }
 
             return match ($user->role) {
+                'super_admin' => to_route('system.dashboard'),
                 'admin', 'chef', 'cashier' => to_route('adminDashboard'),
                 'user' => to_route('userDashboard'),
                 default => back()->with('alert', [

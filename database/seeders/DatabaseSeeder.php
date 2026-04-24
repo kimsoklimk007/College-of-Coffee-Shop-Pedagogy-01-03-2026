@@ -9,6 +9,7 @@ use Database\Seeders\ProductSeeder;
 use Database\Seeders\DiscountSeeder;
 use Database\Seeders\EmployeeRoleSeeder;
 use Database\Seeders\ShiftSeeder;
+use Database\Seeders\SuperAdminSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -33,6 +34,8 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call([
+            // Super Admin (System Owner) - must be first
+            SuperAdminSeeder::class,
             // Employee Management
             EmployeeRoleSeeder::class,
             ShiftSeeder::class,

@@ -137,11 +137,33 @@ class EmployeeController extends Controller
             'role_id' => 'required|exists:employee_roles,id',
             'shift_id' => 'nullable|exists:shifts,id',
             'employment_type' => 'required|in:Full-time,Part-time,Contract,Intern',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'id_card_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'contract_document' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+            'profile_photo' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,bmp,ico|max:90000000000000',
+            'id_card_photo' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,bmp,ico,pdf|max:90000000000000',
+            'contract_document' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,txt,rtf|max:90000000000000',
             'notes' => 'nullable|string',
         ]);
+
+        // Custom validation for image dimensions
+        if ($request->hasFile('profile_photo')) {
+            $profilePhoto = $request->file('profile_photo');
+            if ($profilePhoto->isValid()) {
+                $imageInfo = getimagesize($profilePhoto->getPathname());
+                if ($imageInfo !== false) {
+                    list($width, $height) = $imageInfo;
+                    // Standard dimensions: minimum 100x100, maximum 5000x5000
+                    if ($width < 100 || $height < 100) {
+                        return redirect()->back()
+                            ->withErrors(['profile_photo' => 'Profile photo must be at least 100x100 pixels.'])
+                            ->withInput();
+                    }
+                    if ($width > 5000 || $height > 5000) {
+                        return redirect()->back()
+                            ->withErrors(['profile_photo' => 'Profile photo must not exceed 5000x5000 pixels.'])
+                            ->withInput();
+                    }
+                }
+            }
+        }
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -155,19 +177,19 @@ class EmployeeController extends Controller
             // Handle file uploads
             if ($request->hasFile('profile_photo')) {
                 $profilePhoto = $request->file('profile_photo');
-                $profilePhotoPath = $profilePhoto->store('employee/photos', 'public');
+                $profilePhotoPath = $profilePhoto->store('employee/staff_pictures', 'public');
                 $employeeData['profile_photo'] = $profilePhotoPath;
             }
 
             if ($request->hasFile('id_card_photo')) {
                 $idCardPhoto = $request->file('id_card_photo');
-                $idCardPhotoPath = $idCardPhoto->store('employee/id_cards', 'public');
+                $idCardPhotoPath = $idCardPhoto->store('employee/special_documents', 'public');
                 $employeeData['id_card_photo'] = $idCardPhotoPath;
             }
 
             if ($request->hasFile('contract_document')) {
                 $contractDoc = $request->file('contract_document');
-                $contractDocPath = $contractDoc->store('employee/contracts', 'public');
+                $contractDocPath = $contractDoc->store('employee/special_documents', 'public');
                 $employeeData['contract_document'] = $contractDocPath;
             }
 
@@ -251,10 +273,10 @@ class EmployeeController extends Controller
             'gender' => 'required|in:Male,Female,Other',
             'date_of_birth' => 'required|date|before:today',
             'nationality' => 'required|string|max:100',
-            'id_card_number' => 'nullable|string|unique:employees,id_card_number,' . $id,
-            'passport_number' => 'nullable|string|unique:employees,passport_number,' . $id,
+            'id_card_number' => 'nullable|string|unique:employees,id_card_number,' . $id . ',id',
+            'passport_number' => 'nullable|string|unique:employees,passport_number,' . $id . ',id',
             'phone' => 'required|string|max:20',
-            'email' => 'required|email|unique:employees,email,' . $id,
+            'email' => 'required|email|unique:employees,email,' . $id . ',id',
             'address' => 'required|string',
             'address_kh' => 'nullable|string',
             'city' => 'nullable|string|max:100',
@@ -269,11 +291,34 @@ class EmployeeController extends Controller
             'shift_id' => 'nullable|exists:shifts,id',
             'employment_type' => 'required|in:Full-time,Part-time,Contract,Intern',
             'status' => 'required|in:Active,Inactive,On Leave,Resigned,Terminated',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'id_card_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'contract_document' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+            'end_date' => 'nullable|date|after_or_equal:hire_date',
+            'profile_photo' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,bmp,ico|max:90000000000000',
+            'id_card_photo' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,bmp,ico,pdf|max:90000000000000',
+            'contract_document' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,txt,rtf|max:90000000000000',
             'notes' => 'nullable|string',
         ]);
+
+        // Custom validation for image dimensions
+        if ($request->hasFile('profile_photo')) {
+            $profilePhoto = $request->file('profile_photo');
+            if ($profilePhoto->isValid()) {
+                $imageInfo = getimagesize($profilePhoto->getPathname());
+                if ($imageInfo !== false) {
+                    list($width, $height) = $imageInfo;
+                    // Standard dimensions: minimum 100x100, maximum 5000x5000
+                    if ($width < 100 || $height < 100) {
+                        return redirect()->back()
+                            ->withErrors(['profile_photo' => 'Profile photo must be at least 100x100 pixels.'])
+                            ->withInput();
+                    }
+                    if ($width > 5000 || $height > 5000) {
+                        return redirect()->back()
+                            ->withErrors(['profile_photo' => 'Profile photo must not exceed 5000x5000 pixels.'])
+                            ->withInput();
+                    }
+                }
+            }
+        }
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -282,53 +327,28 @@ class EmployeeController extends Controller
         }
 
         try {
-            $oldValues = $employee->toArray();
-            $employeeData = $request->all();
+            // Only get allowed fields for security
+            $employeeData = $request->only([
+                'first_name', 'last_name', 'first_name_kh', 'last_name_kh',
+                'gender', 'date_of_birth', 'nationality', 'id_card_number',
+                'passport_number', 'phone', 'email', 'address', 'address_kh',
+                'city', 'province', 'emergency_contact_name', 'emergency_contact_phone',
+                'base_salary', 'bank_name', 'bank_account_number', 'bank_account_name',
+                'role_id', 'shift_id', 'employment_type', 'status', 'end_date', 'notes'
+            ]);
 
-            // Handle file uploads
-            if ($request->hasFile('profile_photo')) {
-                // Delete old photo if exists
-                if ($employee->profile_photo) {
-                    Storage::disk('public')->delete($employee->profile_photo);
-                }
-                
-                $profilePhoto = $request->file('profile_photo');
-                $profilePhotoPath = $profilePhoto->store('employee/photos', 'public');
-                $employeeData['profile_photo'] = $profilePhotoPath;
-            }
+            // Store old values for activity logging (only relevant fields)
+            $oldValues = $employee->only(array_keys($employeeData));
 
-            if ($request->hasFile('id_card_photo')) {
-                // Delete old photo if exists
-                if ($employee->id_card_photo) {
-                    Storage::disk('public')->delete($employee->id_card_photo);
-                }
-                
-                $idCardPhoto = $request->file('id_card_photo');
-                $idCardPhotoPath = $idCardPhoto->store('employee/id_cards', 'public');
-                $employeeData['id_card_photo'] = $idCardPhotoPath;
-            }
-
-            if ($request->hasFile('contract_document')) {
-                // Delete old document if exists
-                if ($employee->contract_document) {
-                    Storage::disk('public')->delete($employee->contract_document);
-                }
-                
-                $contractDoc = $request->file('contract_document');
-                $contractDocPath = $contractDoc->store('employee/contracts', 'public');
-                $employeeData['contract_document'] = $contractDocPath;
-            }
+            // Handle file uploads with helper method
+            $this->handleFileUploads($request, $employee, $employeeData);
 
             // Handle end date for resigned/terminated employees
-            if (in_array($request->status, ['Resigned', 'Terminated']) && !$request->end_date) {
-                $employeeData['end_date'] = now();
-            } elseif ($request->status === 'Active' && $request->end_date) {
-                $employeeData['end_date'] = null;
-            }
+            $this->handleEndDateLogic($request->status, $request->end_date, $employeeData);
 
             $employee->update($employeeData);
 
-            // Log activity
+            // Log activity with relevant data only
             ActivityLog::logEmployeeAction('update', "Updated employee: {$employee->full_name}", $employee, $oldValues, $employeeData);
 
             return redirect()->route('employee.show', $employee->id)
@@ -338,6 +358,43 @@ class EmployeeController extends Controller
             return redirect()->back()
                 ->with('error', 'Error updating employee: ' . $e->getMessage())
                 ->withInput();
+        }
+    }
+
+    /**
+     * Handle file uploads for employee update
+     */
+    private function handleFileUploads(Request $request, Employee $employee, array &$employeeData)
+    {
+        $fileConfigurations = [
+            'profile_photo' => ['storage_path' => 'employee/staff_pictures', 'old_field' => 'profile_photo'],
+            'id_card_photo' => ['storage_path' => 'employee/special_documents', 'old_field' => 'id_card_photo'],
+            'contract_document' => ['storage_path' => 'employee/special_documents', 'old_field' => 'contract_document']
+        ];
+
+        foreach ($fileConfigurations as $field => $config) {
+            if ($request->hasFile($field)) {
+                // Delete old file if exists
+                if ($employee->{$config['old_field']}) {
+                    Storage::disk('public')->delete($employee->{$config['old_field']});
+                }
+                
+                $file = $request->file($field);
+                $filePath = $file->store($config['storage_path'], 'public');
+                $employeeData[$field] = $filePath;
+            }
+        }
+    }
+
+    /**
+     * Handle end date logic based on employee status
+     */
+    private function handleEndDateLogic(?string $status, ?string $endDate, array &$employeeData)
+    {
+        if (in_array($status, ['Resigned', 'Terminated']) && !$endDate) {
+            $employeeData['end_date'] = now();
+        } elseif ($status === 'Active' && $endDate) {
+            $employeeData['end_date'] = null;
         }
     }
 

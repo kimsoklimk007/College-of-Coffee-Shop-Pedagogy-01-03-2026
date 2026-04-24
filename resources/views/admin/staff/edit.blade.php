@@ -42,13 +42,24 @@
                             <label class="form-label">{{ __('Confirm Password') }}</label>
                             <input type="password" name="password_confirmation" class="form-control">
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">{{ __('Status') }} *</label>
-                            <select name="status" class="form-select" required>
-                                <option value="active" {{ $staff->status === 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
-                                <option value="inactive" {{ $staff->status === 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
-                            </select>
-                        </div>
+                        {{-- Only Admin can change status --}}
+                        @if(auth()->user()->role === 'admin')
+                            {{-- System Owner (ID: 1) can change any status --}}
+                            {{-- Other Admin can only change non-admin status or their own status --}}
+                            @if(auth()->id() === 1 || $staff->role !== 'admin' || $staff->id === auth()->id())
+                                <div class="mb-3">
+                                    <label class="form-label">{{ __('Status') }} *</label>
+                                    <select name="status" class="form-select" required>
+                                        <option value="active" {{ $staff->status === 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
+                                        <option value="inactive" {{ $staff->status === 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
+                                    </select>
+                                </div>
+                            @else
+                                <input type="hidden" name="status" value="{{ $staff->status }}">
+                            @endif
+                        @else
+                            <input type="hidden" name="status" value="{{ $staff->status }}">
+                        @endif
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">{{ __('Update') }}</button>
                             <a href="{{ route('staff.index') }}" class="btn btn-secondary">{{ __('Cancel') }}</a>

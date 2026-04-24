@@ -1,6 +1,27 @@
 @extends('admin.layouts.master')
 @section('content')
     <section class="container">
+        <!-- Business Welcome Header -->
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-8">
+                <div class="card bg-gradient-primary border-0 shadow-sm" style="background: linear-gradient(135deg, #66401d 0%, #8B5A2B 100%);">
+                    <div class="card-body text-center text-white py-4">
+                        @if(business_logo())
+                            <img src="{{ business_logo() }}" alt="Logo" style="max-height: 50px; margin-bottom: 10px; filter: brightness(0) invert(1);">
+                        @endif
+                        <h3 class="mb-1 fw-bold">{{ __('Welcome to') }} {{ business_name() }}</h3>
+                        <p class="mb-0 opacity-75">{{ business('business_name_en', 'BTEC Cafe & Mini Mart') }}</p>
+                        @if(business_address())
+                            <small class="d-block mt-1 opacity-75"><i class="fas fa-map-marker-alt"></i> {{ business_address() }}</small>
+                        @endif
+                        @if(business_phone())
+                            <small class="d-block opacity-75"><i class="fas fa-phone"></i> {{ business_phone() }}</small>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row justify-content-center align-items-center">
             <div class="col">
                 <div class="row mt-4">
