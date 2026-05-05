@@ -7,7 +7,7 @@
                     <div class="card-header py-3">
                         <div class="">
                             <div class="">
-                                <h3 class="m-0 fw-bold text-center">Add User Account</h3>
+                                <h3 class="m-0 fw-bold text-center">{{ __('Add User Account') }}</h3>
                             </div>
                         </div>
                     </div>
@@ -15,11 +15,11 @@
                         <form action="{{ route('profile.addNewUser') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="profile" class="form-label">User Profile</label>
+                                <label for="profile" class="form-label">{{ __('User Profile') }}</label>
                                 <select id="profile" name="profile" class="form-select">
-                                    <option value="admin">Admin</option>
-                                    <option value="cashier">Cashier</option>
-                                    <option value="chef">Chef</option>
+                                    <option value="admin">{{ __('Admin') }}</option>
+                                    <option value="cashier">{{ __('Cashier') }}</option>
+                                    <option value="chef">{{ __('Chef') }}</option>
                                 </select>
                             </div>
                             <div class="mb-3">

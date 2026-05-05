@@ -68,3 +68,135 @@ body {
     color: #28a745;
 }
 
+/* Dual Currency Summary Styles */
+.currency-section {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background-color: #f8f9fa;
+}
+
+.currency-section.khr-section {
+    border-left: 4px solid #28a745;
+    background-color: #f0f8f0;
+}
+
+.currency-section.usd-section {
+    border-left: 4px solid #007bff;
+    background-color: #f0f7ff;
+}
+
+.currency-header {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed #ced4da;
+    color: #495057;
+}
+
+.currency-header i {
+    margin-right: 6px;
+}
+
+.khr-section .currency-header {
+    color: #28a745;
+}
+
+.usd-section .currency-header {
+    color: #007bff;
+}
+
+.exchange-rate-display {
+    font-size: 12px;
+    color: #6c757d;
+    text-align: right;
+    margin-bottom: 8px;
+    font-style: italic;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.summary-row.total-row {
+    font-weight: bold;
+    font-size: 16px;
+    border-top: 2px solid #dee2e6;
+    padding-top: 8px;
+    margin-top: 8px;
+}
+
+.summary-row.total-row .amount {
+    color: #dc3545;
+}
+
+.amount {
+    font-weight: 600;
+}
+
+.currency-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+}
+
+.currency-badge.khr {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Cart Item Dual Row Styles */
+.cart-item-khr {
+    background-color: #f8f9fa;
+}
+
+.cart-item-usd {
+    background-color: #e8f4fd;
+    border-left: 3px solid #007bff;
+}
+
+.cart-item-usd td {
+    font-size: 13px;
+    color: #0056b3;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.cart-item-usd .item-name::before {
+    content: "→ ";
+    color: #007bff;
+    font-weight: bold;
+}
+
+.price-khr {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.price-usd {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.currency-label {
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 4px;
+}
+
+.currency-label.khr {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.currency-label.usd {
+    background-color: #cce5ff;
+    color: #004085;
+}

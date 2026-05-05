@@ -1,0 +1,639 @@
+{
+  "info": {
+    "name": "Coffee Shop POS API",
+    "description": "API Collection for Coffee Shop POS System\n\nBase URL: http://localhost:8000/api\n\n## Order of Testing:\n1. Category (create first - needed for products)\n2. Product (needs category_id)\n3. Product Size (needs product_id)\n4. Discount (needs product_id)\n5. Order (needs product_id, user_id)\n6. Tax\n7. Feedback (needs product_id, user_id)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Category",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/category/create",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "name",
+                  "value": "Coffee",
+                  "description": "Category name"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2026-01-01",
+                  "description": "Start date (optional)"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-12-31",
+                  "description": "End date (optional)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/category/list"
+          }
+        },
+        {
+          "name": "Get Category Detail",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/category/1"
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/category/update",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Category ID to update"
+                },
+                {
+                  "key": "name",
+                  "value": "Updated Coffee",
+                  "description": "New name"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/category/delete/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Product",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/product/create",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "name",
+                  "value": "Espresso",
+                  "description": "Product name"
+                },
+                {
+                  "key": "qty",
+                  "value": "100",
+                  "description": "Quantity in stock"
+                },
+                {
+                  "key": "category_id",
+                  "value": "1",
+                  "description": "Category ID (must exist)"
+                },
+                {
+                  "key": "description",
+                  "value": "Strong coffee shot",
+                  "description": "Product description"
+                },
+                {
+                  "key": "price_khr",
+                  "value": "15000",
+                  "description": "Price in KHR"
+                },
+                {
+                  "key": "price_usd",
+                  "value": "3.50",
+                  "description": "Price in USD"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/product/list"
+          }
+        },
+        {
+          "name": "Get Product Detail",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/product/1"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/product/update",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Product ID to update"
+                },
+                {
+                  "key": "name",
+                  "value": "Double Espresso",
+                  "description": "New name"
+                },
+                {
+                  "key": "qty",
+                  "value": "50",
+                  "description": "New quantity"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/product/delete/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Product Size",
+      "item": [
+        {
+          "name": "Create Product Size",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/product/size/create",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "product_id",
+                  "value": "1",
+                  "description": "Product ID (must exist)"
+                },
+                {
+                  "key": "size",
+                  "value": "M",
+                  "description": "Size: S, M, L, XL, etc."
+                },
+                {
+                  "key": "price",
+                  "value": "20000",
+                  "description": "Base price"
+                },
+                {
+                  "key": "price_khr",
+                  "value": "20000",
+                  "description": "Price in KHR"
+                },
+                {
+                  "key": "price_usd",
+                  "value": "5.00",
+                  "description": "Price in USD"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Product Sizes",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/product/sizes/1"
+          }
+        },
+        {
+          "name": "Update Product Size",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/product/size/update",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Size ID to update"
+                },
+                {
+                  "key": "price",
+                  "value": "25000"
+                },
+                {
+                  "key": "price_khr",
+                  "value": "25000"
+                },
+                {
+                  "key": "price_usd",
+                  "value": "6.00"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Product Size",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/product/size/delete/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Discount",
+      "item": [
+        {
+          "name": "Create Discount",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/discount/create",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "product_id",
+                  "value": "1",
+                  "description": "Product ID (must exist)"
+                },
+                {
+                  "key": "discount_percentage",
+                  "value": "10",
+                  "description": "Discount percentage (0-100)"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2026-01-01",
+                  "description": "Start date"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-06-30",
+                  "description": "End date"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Discounts",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/discount/list"
+          }
+        },
+        {
+          "name": "Update Discount",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/discount/update",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Discount ID to update"
+                },
+                {
+                  "key": "discount_percentage",
+                  "value": "15"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Discount",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/discount/delete/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Order",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/order/create",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "product_id",
+                  "value": "1",
+                  "description": "Product ID (must exist)"
+                },
+                {
+                  "key": "user_id",
+                  "value": "1",
+                  "description": "User ID (must exist)"
+                },
+                {
+                  "key": "quantity",
+                  "value": "2",
+                  "description": "Order quantity"
+                },
+                {
+                  "key": "size",
+                  "value": "M",
+                  "description": "Size (optional)"
+                },
+                {
+                  "key": "totalprice",
+                  "value": "40000",
+                  "description": "Total price in KHR"
+                },
+                {
+                  "key": "payment_method",
+                  "value": "cash",
+                  "description": "cash, card, or online"
+                },
+                {
+                  "key": "order_type",
+                  "value": "takeaway",
+                  "description": "takeaway, delivery, or dine-in"
+                },
+                {
+                  "key": "notes",
+                  "value": "No sugar",
+                  "description": "Order notes (optional)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Orders",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/order/list"
+          }
+        },
+        {
+          "name": "Get Order Detail",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/order/1"
+          }
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/order/status/update",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Order ID"
+                },
+                {
+                  "key": "status",
+                  "value": "completed",
+                  "description": "pending, processing, completed, or cancelled"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/order/delete/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Tax",
+      "item": [
+        {
+          "name": "Create Tax",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/tax/create",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "name",
+                  "value": "VAT",
+                  "description": "Tax name"
+                },
+                {
+                  "key": "percentage",
+                  "value": "10",
+                  "description": "Tax percentage (0-100)"
+                },
+                {
+                  "key": "is_active",
+                  "value": "1",
+                  "description": "1 = active, 0 = inactive"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Taxes",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/tax/list"
+          }
+        },
+        {
+          "name": "Update Tax",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/tax/update",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Tax ID to update"
+                },
+                {
+                  "key": "percentage",
+                  "value": "15"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Tax",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/tax/delete/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Feedback",
+      "item": [
+        {
+          "name": "Create Feedback",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/feedback/create",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "formurlencoded",
+              "formurlencoded": [
+                {
+                  "key": "product_id",
+                  "value": "1",
+                  "description": "Product ID (must exist)"
+                },
+                {
+                  "key": "user_id",
+                  "value": "1",
+                  "description": "User ID (must exist)"
+                },
+                {
+                  "key": "rating",
+                  "value": "5",
+                  "description": "Rating (1-5)"
+                },
+                {
+                  "key": "comment",
+                  "value": "Great coffee!",
+                  "description": "Comment (optional)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List All Feedback",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/feedback/list"
+          }
+        },
+        {
+          "name": "List Feedback by Product",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/feedback/list/1"
+          }
+        }
+      ]
+    }
+  ]
+}

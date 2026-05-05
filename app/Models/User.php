@@ -19,6 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'provider',
@@ -28,6 +29,7 @@ class User extends Authenticatable
         'address',
         'profile',
         'role',
+        'shop_id',
         'status'
     ];
 
@@ -54,4 +56,35 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get the shop associated with the user.
+     */
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
+
+    /**
+     * Check if user is super admin.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
+    /**
+     * Check if user is admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is staff.
+     */
+    public function isStaff(): bool
+    {
+        return in_array($this->role, ['staff', 'cashier', 'chef']);
+    }
 }

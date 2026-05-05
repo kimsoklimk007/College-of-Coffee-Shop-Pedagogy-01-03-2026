@@ -1,6 +1,27 @@
 @extends('admin.layouts.master')
 @section('content')
     <section class="container">
+        <!-- Business Welcome Header -->
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-8">
+                <div class="card bg-gradient-primary border-0 shadow-sm" style="background: linear-gradient(135deg, #66401d 0%, #8B5A2B 100%);">
+                    <div class="card-body text-center text-white py-4">
+                        @if(business_logo())
+                            <img src="{{ business_logo() }}" alt="Logo" style="max-height: 50px; margin-bottom: 10px; filter: brightness(0) invert(1);">
+                        @endif
+                        <h3 class="mb-1 fw-bold">{{ __('Welcome to') }} {{ business_name() }}</h3>
+                        <p class="mb-0 opacity-75">{{ business('business_name_en', 'BTEC Cafe & Mini Mart') }}</p>
+                        @if(business_address())
+                            <small class="d-block mt-1 opacity-75"><i class="fas fa-map-marker-alt"></i> {{ business_address() }}</small>
+                        @endif
+                        @if(business_phone())
+                            <small class="d-block opacity-75"><i class="fas fa-phone"></i> {{ business_phone() }}</small>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row justify-content-center align-items-center">
             <div class="col">
                 <div class="row mt-4">
@@ -12,7 +33,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-1">
                                         <div class="text-xs fw-bold text-danger mb-1">
-                                            Low Stock(items)
+                                            {{ __('Low Stock(items)') }}
                                         </div>
                                         @if($outofstock->isNotEmpty())
                                             <div class="h5 mb-0 fw-bold text-gray-400">{{ count($outofstock) }}</div>
@@ -33,18 +54,18 @@
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title text-danger" id="outOfStockModalLabel">Almost Out of Stock</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <h5 class="modal-title text-danger" id="outOfStockModalLabel">{{ __('Almost Out of Stock') }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                                 </div>
                                 <div class="modal-body">
                                     @if($outofstock->isNotEmpty())
                                         <ul class="list-group">
                                             @foreach($outofstock as $product)
-                                                <li class="list-group-item">{{ $product->name }} (Stock: {{ $product->stock }})</li>
+                                                <li class="list-group-item">{{ $product->name }} ({{ __('Stock') }}: {{ $product->stock }})</li>
                                             @endforeach
                                         </ul>
                                     @else
-                                        <p>No out-of-stock products.</p>
+                                        <p>{{ __('No out-of-stock products.') }}</p>
                                     @endif
                                 </div>
                             </div>
@@ -56,7 +77,7 @@
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
                                             <div class="text-xs fw-bold text-success mb-1">
-                                                    Monthly Purchase</div>
+                                                    {{ __('Monthly Purchase') }}</div>
                                                 <div class="h5 mb-0 fw-bold text-gray-400">{{ number_format($purchaseCost, 2)  }}
                                                 </div>
                                             </div>
@@ -75,7 +96,7 @@
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col mr-1">
                                                     <div class="text-xs fw-bold text-primary mb-1">
-                                                        Daily Sales</div>
+                                                        {{ __('Daily Sales') }}</div>
                                                     <div class="h5 mb-0 fw-bold text-gray-400">
                                                         {{ $dailySales }}</div>
                                                 </div>
@@ -93,7 +114,7 @@
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col mr-1">
                                                     <div class="text-xs fw-bold text-secondary mb-1">
-                                                        Monthly Sales</div>
+                                                        {{ __('Monthly Sales') }}</div>
                                                     <div class="h5 mb-0 fw-bold text-gray-400">
                                                         {{ $monthlySales }}</div>
                                                 </div>
@@ -126,7 +147,7 @@
                                 <div class="col-xl-6 col-md-12 mb-3">
                                     <div class="card shadow-lg p-3 border-left-warning shadow h-100 d-flex flex-column justify-content-between" style="backdrop-filter: blur(10px); border-radius: 12px;">
                                         <div class="card-body">
-                                            <h5 class="fw-bold"><i class="fa-solid fa-chart-pie me-2"></i> Top Products</h5>
+                                            <h5 class="fw-bold"><i class="fa-solid fa-chart-pie me-2"></i> {{ __('Top Products') }}</h5>
                                             <div style="position: relative; height: 200px; max-width: 100%;">
                                                 <canvas id="topProductsChart"></canvas>
                                             </div>
@@ -137,19 +158,19 @@
                                 <div class="col-xl-6 col-md-12 mb-3">
                                     <div class="card shadow-lg p-3 border-left-warning shadow h-100 d-flex flex-column justify-content-between" style="backdrop-filter: blur(10px); border-radius: 12px;">
                                         <div class="card-body">
-                                            <h5 class="fw-bold"><i class="fa-solid fa-credit-card me-2"></i> Payment Types</h5>
+                                            <h5 class="fw-bold"><i class="fa-solid fa-credit-card me-2"></i> {{ __('Payment Types') }}</h5>
                                             <div>
-                                                <p class="fw-bold mt-3">Cash <span class="float-end">{{ $paymentMethods->where('payment_method', 'cash')->first()->count ?? 0 }}</span></p>
+                                                <p class="fw-bold mt-3">{{ __('Cash') }} <span class="float-end">{{ $paymentMethods->where('payment_method', 'cash')->first()->count ?? 0 }}</span></p>
                                                 <div class="progress">
                                                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ ($paymentMethods->where('payment_method', 'cash')->first()->count ?? 0) * 10 }}%"></div>
                                                 </div>
 
-                                                <p class="fw-bold mt-3">Mobile <span class="float-end">{{ $paymentMethods->where('payment_method', 'mobile')->first()->count ?? 0 }}</span></p>
+                                                <p class="fw-bold mt-3">{{ __('Mobile') }} <span class="float-end">{{ $paymentMethods->where('payment_method', 'mobile')->first()->count ?? 0 }}</span></p>
                                                 <div class="progress">
                                                     <div class="progress-bar bg-warning" role="progressbar" style="width: {{ ($paymentMethods->where('payment_method', 'mobile')->first()->count ?? 0) * 10 }}%"></div>
                                                 </div>
 
-                                                <p class="fw-bold mt-3">Card <span class="float-end">{{ $paymentMethods->where('payment_method', 'card')->first()->count ?? 0 }}</span></p>
+                                                <p class="fw-bold mt-3">{{ __('Card') }} <span class="float-end">{{ $paymentMethods->where('payment_method', 'card')->first()->count ?? 0 }}</span></p>
                                                 <div class="progress">
                                                     <div class="progress-bar bg-info" role="progressbar" style="width: {{ ($paymentMethods->where('payment_method', 'card')->first()->count ?? 0) * 10 }}%"></div>
                                                 </div>
@@ -165,7 +186,7 @@
                             <div class="col-xl-8 col-md-7">
                                 <div class="card shadow">
                                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="background-color: #50301a; border-radius: 6px;">
-                                        <h6 class="m-0 fw-bold text-primary">Sales Overview</h6>
+                                        <h6 class="m-0 fw-bold text-primary">{{ __('Sales Overview') }}</h6>
                                     </div>
                                     <div class="card-body">
                                         <div class="chart-area" style="position: relative; height: 250px;">
@@ -181,7 +202,7 @@
                             <div class="col-xl-4 col-md-5">
                                 <div class="card shadow h-100 py-1">
                                     <div class="card-body">
-                                        <h5 class="card-title fw-bold">Order Types</h5>
+                                        <h5 class="card-title fw-bold">{{ __('Order Types') }}</h5>
                                         <div style="position: relative; height: 250px; max-width: 100%;">
                                             <canvas id="myPieChart"></canvas>
                                         </div>
@@ -198,7 +219,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @section('scripts')
 <script>
-    const salesOverview = @json($salesOverview);
+    const salesOverview = {!! json_encode($salesOverview) !!};
 
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize chart for sales overview
@@ -210,7 +231,7 @@
                 data: {
                     labels: salesOverview.map(data => data.date),
                     datasets: [{
-                        label: 'Total Sales',
+                        label: "{{ __('Total Sales') }}",
                         data: salesOverview.map(data => data.daily_sales),
                         backgroundColor: 'rgba(78, 115, 223, 0.05)',
                         borderColor: 'rgba(78, 115, 223, 1)',
@@ -224,13 +245,13 @@
                         x: {
                             title: {
                                 display: true,
-                                text: 'Date'
+                                text: "{{ __('Date') }}"
                             }
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: 'Sales'
+                                text: "{{ __('Sales') }}"
                             }
                         }
                     }
@@ -246,8 +267,8 @@
             const pieCtx = ctxPie.getContext('2d');
 
             // Dynamic data from Blade
-            const labels = @json($labels); //Eat-in, deli, take_away
-            const data = @json($counts); // [25, 45]
+            const labels = {!! json_encode($labels) !!}; //Eat-in, deli, take_away
+            const data = {!! json_encode($counts) !!}; // [25, 45]
 
             new Chart(pieCtx, {
                 type: 'pie',
@@ -275,8 +296,8 @@
 
         const ctxTopProducts = document.getElementById('topProductsChart');
         if (ctxTopProducts) {
-            const topProductLabels = @json($topProductLabels);
-            const topProductCounts = @json($topProductCounts);
+            const topProductLabels = {!! json_encode($topProductLabels) !!};
+            const topProductCounts = {!! json_encode($topProductCounts) !!};
 
             if (topProductLabels.length > 0) {
                 console.log("Top Products Labels:", topProductLabels);

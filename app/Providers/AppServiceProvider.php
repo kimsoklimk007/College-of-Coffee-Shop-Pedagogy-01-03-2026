@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\BusinessSetting;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -24,17 +25,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Share counts and business settings with all views
         View::composer('*', function ($view) {
-            $userId = Auth::id();
-            $cartCount = $userId ? Cart::where('user_id', $userId)->count() : 0;
-            $view->with('cartCount', $cartCount);
+            static $counts = null;
+            if ($counts === null) {
+                $userId = Auth::id();
+                $counts = [
+                    'cartCount' => $userId ? Cart::where('user_id', $userId)->count() : 0,
+                    'orderCount' => $userId ? Order::where('user_id', $userId)->count() : 0,
+                ];
+            }
+            $view->with($counts);
         });
 
+        // Share business settings with all views
         View::composer('*', function ($view) {
-            $userId = Auth::id();
-            $orderCount = $userId ? Order::where('user_id', $userId)->count() : 0;
-            $view->with('orderCount', $orderCount);
+            $businessSettings = BusinessSetting::getAll();
+            $view->with('businessSettings', $businessSettings);
         });
 
         Paginator::useBootstrap();

@@ -6,7 +6,7 @@
             <div class="card shadow-sm" style="border-radius: 8px; max-width: 600px;" >
                 <div class="row">
                     <h2 class="intro-y fw-bold text-center mt-2 mb-4">
-                        Profile Layout
+                        {{ __('Profile Layout') }}
                     </h2>
                     <!-- Profile Image Column -->
                     <div class="col-md-6 d-flex flex-column align-items-center">
@@ -21,13 +21,13 @@
                                      style="width: 150px;  border-radius: 50%;">
                             @endif
                         </div>
-                        <h4 class="text-center">Name: {{ auth()->user()->name }}</h4>
-                        <p class="text-muted text-center">Role: {{ old('role', auth()->user()->role) }}</p>
+                        <h4 class="text-center">{{ __('Name') }}: {{ auth()->user()->name }}</h4>
+                        <p class="text-muted text-center">{{ __('Role') }}: {{ old('role', auth()->user()->role) }}</p>
                     </div>
 
                     <!-- Contact Details Column -->
                     <div class="col-md-5 mt-5">
-                        <h5 class="fw-bold mt-3">Contact Details</h5>
+                        <h5 class="fw-bold mt-3">{{ __('Contact Details') }}</h5>
                         <div class="mt-3">
                             <p class="mb-2">
                                 <i class="bi bi-envelope me-2"></i>
@@ -45,13 +45,13 @@
                 <div class="mt-4">
                     <ul class="nav nav-tabs justify-content-center">
                         <li class="nav-item">
-                            <a class="nav-link active" href="{{ route('adminDashboard') }}">Dashboard</a>
+                            <a class="nav-link active" href="{{ route('adminDashboard') }}">{{ __('Dashboard') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('profile.detail') }}">Account & Profile</a>
+                            <a class="nav-link" href="{{ route('profile.detail') }}">{{ __('Account & Profile') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('passwordpage') }}">Reset Password</a>
+                            <a class="nav-link" href="{{ route('passwordpage') }}">{{ __('Reset Password') }}</a>
                         </li>
                     </ul>
                 </div>

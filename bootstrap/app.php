@@ -1,12 +1,17 @@
 <?php
 
+// Suppress deprecated PDO warnings for Laravel vendor files
+error_reporting(E_ALL & ~E_DEPRECATED);
+
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\ChefMiddleware;
 use App\Http\Middleware\UserMiddleware;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CashierMiddleware;
+use App\Http\Middleware\SuperAdminMiddleware;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,12 +20,20 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: 'api/admin',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        then: function () {
+            Route::middleware('web')
+                ->group(base_path('routes/system.php'));
+        },
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
+
         $middleware -> alias([
-            'admin' =>AdminMiddleware::class,
+            'admin' => AdminMiddleware::class,
             'user' => UserMiddleware::class,
+            'super_admin' => SuperAdminMiddleware::class,
             // 'cashier' => CashierMiddleware::class
             //             'chef' => ChefMiddleware::class
         ]);

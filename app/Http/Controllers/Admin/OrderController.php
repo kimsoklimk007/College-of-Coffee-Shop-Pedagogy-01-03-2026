@@ -131,8 +131,17 @@ class OrderController extends Controller
 
         $orderCode = $cartOrder->first() ?? null;
 
+        // Default values for view
+        $subTotal = 0;
+        $taxAmount = 0;
+        $deliveryFee = 0;
+        $total = 0;
+        $orderType = '';
+        $deliveryLocationId = null;
+        $deliveryLocations = \App\Models\DeliveryFees::all();
+
         // dd($orderCode);
-        return view('admin.order.booking', compact('categories', 'cartOrder'));
+        return view('admin.order.booking', compact('categories', 'cartOrder', 'subTotal', 'taxAmount', 'deliveryFee', 'total', 'orderType', 'deliveryLocationId', 'deliveryLocations'));
     }
 
 //after generated new Code and store the code in session
@@ -199,6 +208,9 @@ class OrderController extends Controller
                                 products.name,
                                 products.image,
                                 product_sizes.price,
+                                product_sizes.price_khr,
+                                product_sizes.price_usd,
+                                product_sizes.currency,
                                 product_sizes.size,
                                 carts.qty as cart_qty,
                                 carts.id as cartId,
@@ -245,7 +257,7 @@ class OrderController extends Controller
         foreach ($products as $product) {
             $product->sizes = DB::table('product_sizes')
                 ->where('product_id', $product->id)
-                ->get(['size', 'price']);
+                ->get(['size', 'price', 'price_khr', 'price_usd', 'currency']);
         }
 
         // Return view with data

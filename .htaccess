@@ -1,0 +1,20 @@
+# Apache Configuration for Large File Uploads
+# Supports extremely large files up to 90000000000000GB
+
+# Increase upload limits
+php_value upload_max_filesize 90000000000000G
+php_value post_max_size 90000000000000G
+php_value max_execution_time 3600
+php_value max_input_time 3600
+php_value memory_limit -1
+php_value max_file_uploads 100
+
+# Additional settings for large uploads
+php_value max_input_vars 10000
+php_value max_multipart_body_parts -1
+
+# Increase timeout for large uploads
+Timeout 3600
+
+# Allow large requests
+LimitRequestBody 0

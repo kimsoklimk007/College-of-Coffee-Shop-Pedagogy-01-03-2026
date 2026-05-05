@@ -3,34 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Slip</title>
+    <title>{{ business_name() }} - {{ __('Payment Slip') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('admin/CSS/slip.css') }}">
 </head>
 <body onload="window.print();">
     <div class="slip-container" style="font-family: Arial, sans-serif; font-size: 14px; width: 400px; margin: auto; border: 1px solid #000; padding: 10px;">
-        <div class="title">Payment Slip</div>
+        <!-- Business Header -->
+        <div style="text-align: center; margin-bottom: 10px;">
+            @if(business_logo())
+                <img src="{{ business_logo() }}" alt="Logo" style="max-height: 50px; margin-bottom: 5px;">
+            @endif
+            <h3 style="margin: 0; font-weight: bold; font-size: 18px;">{{ business('business_name_kh', 'កាហ្វេ គរុកោសល្យ និងមីនីម៉ាត') }}</h3>
+            <p style="margin: 0; font-size: 12px;">{{ business('business_name_en', 'BTEC Cafe & Mini Mart') }}</p>
+            @if(business_address())
+                <p style="margin: 0; font-size: 10px; color: #666;">{{ business_address() }}</p>
+            @endif
+            @if(business_phone())
+                <p style="margin: 0; font-size: 10px; color: #666;">{{ __('Tel:') }} {{ business_phone() }}</p>
+            @endif
+            @if(business('tax_number'))
+                <p style="margin: 0; font-size: 10px; color: #666;">{{ __('Tax No:') }} {{ business('tax_number') }}</p>
+            @endif
+        </div>
+        <hr style="border: none; border-top: 1px dashed #000; margin: 10px 0;">
+
+        <div class="title">{{ __('Payment Slip') }}</div>
 
         <div style="display: flex; justify-content: space-between;">
-            <div>Cashier ID: {{ $records->first()->CashierID ?? 'N/A' }}</div>
-            <div>Date: {{ $records->first()->Date ?? 'N/A' }}</div>
+            <div>{{ __('Cashier ID:') }} {{ $records->first()->CashierID ?? 'N/A' }}</div>
+            <div>{{ __('Date:') }} {{ $records->first()->Date ?? 'N/A' }}</div>
 
         </div>
         <div style="display: flex; justify-content: space-between;">
             <div>{{ $records->first()->order_code ?? 'N/A' }}</div>
-            <div>Paid by: {{  $records->first()->payment_method ?? 'N/A' }}</div>
+            <div>{{ __('Paid by:') }} {{  $records->first()->payment_method ?? 'N/A' }}</div>
 
         </div>
 
         <table style="width: 100%; margin-top: 10px; border-collapse: collapse;">
             <thead>
                 <tr>
-                    <th style="text-align: left; border-bottom: 1px solid #000;">Name</th>
-                    <th style="text-align: center; border-bottom: 1px solid #000;">Qty</th>
-                    <th style="text-align: right; border-bottom: 1px solid #000;">Price</th>
-                    <th style="text-align: right; border-bottom: 1px solid #000;">Size</th>
-                    <th style="text-align: right; border-bottom: 1px solid #000;">Discount</th>
-                    <th style="text-align: right; border-bottom: 1px solid #000;">Amount</th>
+                    <th style="text-align: left; border-bottom: 1px solid #000;">{{ __('Name') }}</th>
+                    <th style="text-align: center; border-bottom: 1px solid #000;">{{ __('Qty') }}</th>
+                    <th style="text-align: right; border-bottom: 1px solid #000;">{{ __('Price') }}</th>
+                    <th style="text-align: right; border-bottom: 1px solid #000;">{{ __('Size') }}</th>
+                    <th style="text-align: right; border-bottom: 1px solid #000;">{{ __('Discount') }}</th>
+                    <th style="text-align: right; border-bottom: 1px solid #000;">{{ __('Amount') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,19 +68,19 @@
         <div style="margin-top: 10px; border-top: 1px solid #000; padding-top: 5px;">
             <table style="width: 100%; border-collapse: collapse;">
                 <tr>
-                    <td style="text-align: left;">Sub Total</td>
+                    <td style="text-align: left;">{{ __('Sub Total') }}</td>
                     <td style="text-align: right;">{{ number_format($subTotalAmt, 2, '.', ',') }}</td>
                 </tr>
                  <tr>
-                    <td style="text-align: left;">Tax</td>
+                    <td style="text-align: left;">{{ __('Tax') }}</td>
                     <td style="text-align: right;">{{ $taxAmount }}</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left;">Deli Fees</td>
+                    <td style="text-align: left;">{{ __('Deli Fees') }}</td>
                     <td style="text-align: right;">{{ number_format($deliveryFee, 2, '.', ',') }}</td>
                 </tr>
                 <tr style="font-weight: bold;">
-                    <td style="text-align: left;">Net Amount</td>
+                    <td style="text-align: left;">{{ __('Net Amount') }}</td>
                     <td style="text-align: right;">{{ $records->first()->paid_amount - $records->first()->change_amount }}</td>
                 </tr>
             </table>
@@ -69,16 +88,23 @@
         <div style="margin-top: 10px; border-top: 1px solid #000; padding-top: 5px;">
             <table style="width: 100%; border-collapse: collapse;">
                 <tr>
-                    <td style="text-align: left;">Paid Amount</td>
+                    <td style="text-align: left;">{{ __('Paid Amount') }}</td>
                     <td style="text-align: right;">{{ $records->first()->paid_amount }}</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left;">Change</td>
+                    <td style="text-align: left;">{{ __('Change') }}</td>
                     <td style="text-align: right;">{{ $records->first()->change_amount }}</td>
                 </tr>
             </table>
         </div>
-        <div style="text-align: center; margin-top: 10px; font-weight: bold;">Thank You</div>
+        <div style="text-align: center; margin-top: 10px; font-weight: bold;">{{ __('Thank You') }}</div>
+
+        <!-- Receipt Footer -->
+        @if(receipt_footer())
+            <div style="text-align: center; margin-top: 5px; font-size: 11px; color: #666;">
+                {{ receipt_footer() }}
+            </div>
+        @endif
 
     </div>
 

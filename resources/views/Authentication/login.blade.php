@@ -15,7 +15,16 @@
 
         <!-- Right: Login Form -->
         <div class="p-5 text-white" style="width: 50%;">
-            <h3 class="fw-bold text-center mb-4">Login</h3>
+            <!-- Business Logo and Name -->
+            <div class="text-center mb-4">
+                @if(business_logo())
+                    <img src="{{ business_logo() }}" alt="Logo" style="max-height: 60px; margin-bottom: 10px;">
+                @endif
+                <h3 class="fw-bold">{{ business('business_name_kh', 'កាហ្វេ គរុកោសល្យ និងមីនីម៉ាត') }}</h3>
+                <p class="text-light mb-0">{{ business('business_name_en', 'BTEC Cafe & Mini Mart') }}</p>
+                <hr class="my-3" style="border-color: rgba(255,255,255,0.3);">
+            </div>
+            <h4 class="fw-bold text-center mb-4">{{ __('Login') }}</h4>
 
             <!-- Social Login -->
             <div class="d-flex justify-content-center mb-3">
