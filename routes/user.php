@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\User\UserDashboardController;
+use App\Http\Controllers\UserCustomer\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'user', 'middleware' => 'user'], function () {

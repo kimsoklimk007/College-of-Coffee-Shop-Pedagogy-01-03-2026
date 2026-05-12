@@ -1,15 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\AssetController;
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\ReportController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\PurchaseController;
-use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\UserAdmin\AuthController;
+use App\Http\Controllers\UserAdmin\AssetController;
+use App\Http\Controllers\UserAdmin\OrderController;
+use App\Http\Controllers\UserAdmin\ReportController;
+use App\Http\Controllers\UserAdmin\ProductController;
+use App\Http\Controllers\UserAdmin\ProfileController;
+use App\Http\Controllers\UserAdmin\CategoryController;
+use App\Http\Controllers\UserAdmin\PurchaseController;
+use App\Http\Controllers\UserAdmin\AdminDashboardController;
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/home', [AdminDashboardController::class, 'index'])->name('adminDashboard');

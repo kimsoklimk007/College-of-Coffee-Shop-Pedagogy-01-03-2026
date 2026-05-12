@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserCustomer\AuthController;
 use Laravel\Socialite\Facades\Socialite;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProviderController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\User\UserDashboardController;
-use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\UserCustomer\ProfileController;
+use App\Http\Controllers\UserCustomer\ProviderController;
+use App\Http\Controllers\UserAdmin\CategoryController;
+use App\Http\Controllers\UserCustomer\UserDashboardController;
+use App\Http\Controllers\UserAdmin\AdminDashboardController;
 
 require __DIR__.'/auth.php';
 require_once __DIR__.'/admin.php';
@@ -16,7 +16,7 @@ require_once __DIR__.'/user.php';
 
 // $user->token
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('user_customer.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
